@@ -8,8 +8,9 @@ import {
   setDoc,
   collection,
 } from '@react-native-firebase/firestore';
-
+import OnboardingScreen from './src/screens/Onboarding/OnboardingScreen';
 import SplashScreen from './src/screens/Splash/SplashScreen';
+import LoginScreen from './src/screens/Auth/login/loginScreen';
 const db = getFirestore();
 
 function App() {
@@ -46,10 +47,10 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-        {/* <View>
+      {/* <View>
           <Text>Welcome</Text>
 
           {user && (
@@ -59,8 +60,10 @@ function App() {
             </>
           )}
         </View> */}
-        <SplashScreen />
-      </SafeAreaView>
+      {/* <SplashScreen /> */}
+      <LoginScreen />
+      {/* </SafeAreaView> */}
+      {/* <OnboardingScreen /> */}
     </SafeAreaProvider>
   );
 }

@@ -1,26 +1,35 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import Container from '../../assets/Container.svg';
+import Icon from '../../assets/Icon.svg';
 import Bg from '../../assets/Bg.svg';
 import { fonts } from '../../constants/fonts';
+import { moderateScale } from 'react-native-size-matters';
+import DottedIndicator from '../../components/Common/DottedIndicator';
+
 export default function SplashScreen() {
   return (
     <LinearGradient
-      // start={{x: 0, y: 0}} means top-left corner
       start={{ x: 0, y: 0 }}
-      // end={{x: 1, y: 1}} means bottom-right corner
       end={{ x: 1, y: 1 }}
       colors={['#2563EB', '#7C3AED']}
       style={styles.linearGradient}
     >
+      {/* Full-screen background */}
+      <View style={styles.backgroundContainer}>
+        <Bg width="100%" height="100%" />
+      </View>
+
+      {/* Center content */}
       <View style={styles.container}>
-        <View>
-          <Bg />
-          <Container />
+        <View style={styles.iconContainer}>
+          <Icon width={50} height={50} />
         </View>
+
         <Text style={styles.text}>TaskFlow</Text>
+
         <Text style={styles.sbuText}>Manage. Build. Deliver.</Text>
+        <DottedIndicator total={3} activeIndex={0} />
       </View>
     </LinearGradient>
   );
@@ -30,19 +39,40 @@ const styles = StyleSheet.create({
   linearGradient: {
     flex: 1,
   },
+
+  backgroundContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  text: {
-    color: '#ffffff',
-    fontSize: 24,
 
-    fontFamily: fonts.bold,
-  },
-  sbuText: {
+  text: {
     color: '#FFFFFF',
-    fontFamily: fonts.bold,
+    fontSize: 36,
+    paddingTop: 10,
+    fontFamily: fonts.extraBold,
+  },
+
+  sbuText: {
+    color: '#E2E8F0',
+    fontSize: 14,
+    fontFamily: fonts.medium,
+    // marginTop: 4,
+  },
+  iconContainer: {
+    backgroundColor: '#FFFFFF33',
+    height: 100,
+    width: 100,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
