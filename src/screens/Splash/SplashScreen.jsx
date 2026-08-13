@@ -1,13 +1,23 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from '../../assets/Icon.svg';
 import Bg from '../../assets/Bg.svg';
 import { fonts } from '../../constants/fonts';
 import { moderateScale } from 'react-native-size-matters';
 import DottedIndicator from '../../components/Common/DottedIndicator';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SplashScreen() {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Onboarding');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [navigation]);
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}

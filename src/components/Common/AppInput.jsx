@@ -6,6 +6,7 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Third-party imports
 import { vs } from 'react-native-size-matters';
+import { Heights, Padding } from '../../constants/globalStyle';
 
 // Constants
 
@@ -62,22 +63,21 @@ export default AppInput;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: vs(36),
-    backgroundColor: '#FFFFFF',
+
+    backgroundColor: '#F8FAFC',
     borderRadius: 18,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#E2E8F0',
-    paddingHorizontal: 16,
+    paddingHorizontal: Padding.md,
     borderWidth: 1,
-    marginBottom: 8,
   },
 
   input: {
     flex: 1,
-    height: 44,
-    paddingHorizontal: 14,
-    backgroundColor: '#FFFFFF',
+    height: Heights.inputSm,
+    paddingHorizontal: 12,
+    backgroundColor: '#F8FAFC',
 
     // borderColor: '#E2E8F0',
     borderRadius: 8,

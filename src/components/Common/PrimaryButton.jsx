@@ -31,6 +31,7 @@
 // });
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Padding, Shadows } from '../../constants/globalStyle';
 
 export default function PrimaryButton({ title, onPress, style }) {
   return (
@@ -46,12 +47,14 @@ export default function PrimaryButton({ title, onPress, style }) {
 
 const styles = StyleSheet.create({
   button: {
-    height: 44,
+    height: 48,
     paddingHorizontal: 24,
+
     backgroundColor: '#2563EB',
-    borderRadius: 8,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Shadows.primaryButton,
   },
 
   label: {

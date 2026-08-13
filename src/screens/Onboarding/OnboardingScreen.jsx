@@ -14,6 +14,8 @@ import Onboard3 from '../../assets/Onboard3.svg';
 
 import PrimaryButton from '../../components/Common/PrimaryButton';
 import DottedIndicator from '../../components/Common/DottedIndicator';
+import { useNavigation } from '@react-navigation/native';
+import { Colors } from '../../constants/globalStyle';
 
 const onboardingData = [
   {
@@ -42,6 +44,7 @@ const onboardingData = [
 ];
 
 export default function OnboardingScreen() {
+  const navigation = useNavigation();
   const { width } = useWindowDimensions();
 
   const flatListRef = useRef(null);
@@ -70,6 +73,8 @@ export default function OnboardingScreen() {
 
       // Navigate to your next screen here
       // navigation.replace('Login');
+
+      navigation.replace('Auth');
     }
   };
 
@@ -129,11 +134,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingHorizontal: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.surface,
   },
 
   page: {
     flex: 1,
+    backgroundColor: Colors.surface,
   },
 
   content: {
