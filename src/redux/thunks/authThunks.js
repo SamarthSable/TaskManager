@@ -9,6 +9,7 @@ import {
   sendPasswordResetEmail,
 } from '../../services/authServices';
 
+import { sendOtp, verifyOtp } from '../../services/otpServices';
 /* 
    SIGN UP
  */
@@ -106,8 +107,108 @@ export const getUserProfileThunk = createAsyncThunk(
       return rejectWithValue(getAuthErrorMessage(error));
     }
   },
+); /* =========================================
+   SEND OTP
+========================================= */
+
+export const sendOtpThunk = createAsyncThunk(
+  'auth/sendOtp',
+
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      const trimmedEmail = email?.trim().toLowerCase();
+
+      if (!trimmedEmail) {
+        return rejectWithValue('Please enter your email address.');
+      }
+
+      const result = await sendOtp(trimmedEmail);
+
+      return result;
+    } catch (error) {
+      console.log('Send OTP Error:', error);
+
+      return rejectWithValue(
+        error?.message || 'Unable to send OTP. Please try again.',
+      );
+    }
+  },
 );
 
+/* =========================================
+   VERIFY OTP
+========================================= */
+
+export const verifyOtpThunk = createAsyncThunk(
+  'auth/verifyOtp',
+
+  async ({ email, otp }, { rejectWithValue }) => {
+    try {
+      const trimmedEmail = email?.trim().toLowerCase();
+      const enteredOtp = otp?.trim();
+
+      if (!trimmedEmail) {
+        return rejectWithValue('Email address is required.');
+      }
+
+      if (!enteredOtp) {
+        return rejectWithValue('Please enter the OTP.');
+      }
+
+      if (enteredOtp.length !== 6) {
+        return rejectWithValue('Please enter a valid 6-digit OTP.');
+      }
+
+      // OTP is verified from Firestore
+      const result = await verifyOtp({
+        email: trimmedEmail,
+        enteredOtp,
+      });
+
+      return {
+        email: trimmedEmail,
+        verified: result,
+      };
+    } catch (error) {
+      console.log('Verify OTP Error:', error);
+
+      return rejectWithValue(
+        error?.message || 'Invalid OTP. Please try again.',
+      );
+    }
+  },
+);
+
+/* =========================================
+   RESET PASSWORD
+========================================= */
+
+export const resetPasswordThunk = createAsyncThunk(
+  'auth/resetPassword',
+  async ({ email, newPassword }, { rejectWithValue }) => {
+    try {
+      const normalizedEmail = email?.trim().toLowerCase();
+
+      if (!normalizedEmail) {
+        return rejectWithValue('Email is required.');
+      }
+
+      if (!newPassword) {
+        return rejectWithValue('Please enter a new password.');
+      }
+
+      if (newPassword.length < 6) {
+        return rejectWithValue('Password should be at least 6 characters.');
+      }
+
+      const result = await resetUserPassword(normalizedEmail, newPassword);
+
+      return result;
+    } catch (error) {
+      return rejectWithValue(error?.message || 'Unable to reset password.');
+    }
+  },
+);
 /* 
    FORGOT PASSWORD
  */

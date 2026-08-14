@@ -7,6 +7,8 @@ import {
   restoreSessionThunk,
   getUserProfileThunk,
   forgotPasswordThunk,
+  sendOtpThunk,
+  verifyOtpThunk,
 } from '../thunks/authThunks';
 
 const initialState = {
@@ -18,6 +20,13 @@ const initialState = {
   loading: false,
 
   error: null,
+  // OTP state
+  otpEmail: null,
+  otpVerified: false,
+
+  resetLoading: false,
+
+  resetLoading: false,
 };
 
 const authSlice = createSlice({
@@ -177,6 +186,48 @@ const authSlice = createSlice({
         state.error = action.payload;
       })
 
+      /* =========================================
+       SEND OTP
+    ========================================= */
+      .addCase(sendOtpThunk.pending, state => {
+        state.resetLoading = true;
+        state.error = null;
+      })
+
+      .addCase(sendOtpThunk.fulfilled, (state, action) => {
+        state.resetLoading = false;
+
+        state.otpEmail = action.payload.email;
+        state.otp = action.payload.otp;
+        state.otpExpiresAt = action.payload.expiresAt;
+
+        state.otpVerified = false;
+      })
+
+      .addCase(sendOtpThunk.rejected, (state, action) => {
+        state.resetLoading = false;
+        state.error = action.payload;
+      })
+
+      /* =========================================
+       VERIFY OTP
+    ========================================= */
+
+      .addCase(verifyOtpThunk.pending, state => {
+        state.resetLoading = true;
+        state.error = null;
+      })
+
+      .addCase(verifyOtpThunk.fulfilled, state => {
+        state.resetLoading = false;
+        state.otpVerified = true;
+      })
+
+      .addCase(verifyOtpThunk.rejected, (state, action) => {
+        state.resetLoading = false;
+        state.otpVerified = false;
+        state.error = action.payload;
+      })
       /* 
          FORGOT PASSWORD
        */

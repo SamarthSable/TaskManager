@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Alert,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -38,6 +39,7 @@ import Lock from '../../../assets/Lock.svg';
 import { fonts } from '../../../constants/fonts';
 
 import { loginThunk } from '../../../redux/thunks/authThunks';
+import { signInWithGoogle } from '../../../services/googleAuthService';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
@@ -48,9 +50,10 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
+  // Email / Password Login
   const handleLogin = async () => {
-    // Validation
     if (!email.trim()) {
       console.log('Please enter your email');
       return;
@@ -69,12 +72,32 @@ export default function LoginScreen() {
         }),
       ).unwrap();
 
-      console.log('Login successful:', user);
+      Alert.alert('Login successful:', JSON.stringify(user));
 
-      // Navigate after Firebase login succeeds
       navigation.replace('Home');
     } catch (error) {
-      console.log('Login failed:', error);
+      Alert.alert('Login failed:', error);
+    }
+  };
+
+  // Google Login
+  const handleGoogleLogin = async () => {
+    if (googleLoading) {
+      return;
+    }
+
+    try {
+      setGoogleLoading(true);
+
+      const user = await signInWithGoogle();
+
+      console.log('Google login successful:', user);
+
+      navigation.replace('Home');
+    } catch (error) {
+      console.log('Google login failed:', error);
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -148,15 +171,17 @@ export default function LoginScreen() {
             <Text style={styles.forgotText}>Forgot password?</Text>
           </TouchableOpacity>
 
-          {/* Error
-          {error ? <Text style={styles.errorText}>{error}</Text> : null} */}
+          {/* Error */}
+          {/* {error ? (
+            <Text style={styles.errorText}>{error}</Text>
+          ) : null} */}
 
           {/* Sign In */}
           <PrimaryButton
             title={loading ? 'Signing In...' : 'Sign In'}
             style={styles.button}
             onPress={handleLogin}
-            disabled={loading}
+            disabled={loading || googleLoading}
           />
         </View>
 
@@ -171,13 +196,26 @@ export default function LoginScreen() {
 
         {/* Social Login */}
         <View style={styles.socialContainer}>
-          <TouchableOpacity style={styles.socialButton}>
+          {/* Google */}
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={handleGoogleLogin}
+            disabled={googleLoading || loading}
+          >
             <Google width={22} height={22} />
-            <Text style={styles.socialText}>Google</Text>
+
+            <Text style={styles.socialText}>
+              {googleLoading ? 'Signing In...' : 'Google'}
+            </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.socialButton}>
+          {/* Github */}
+          <TouchableOpacity
+            style={styles.socialButton}
+            disabled={loading || googleLoading}
+          >
             <Github width={22} height={22} />
+
             <Text style={styles.socialText}>Github</Text>
           </TouchableOpacity>
         </View>

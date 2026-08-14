@@ -3,6 +3,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -15,7 +16,7 @@ import Onboard3 from '../../assets/Onboard3.svg';
 import PrimaryButton from '../../components/Common/PrimaryButton';
 import DottedIndicator from '../../components/Common/DottedIndicator';
 import { useNavigation } from '@react-navigation/native';
-import { Colors } from '../../constants/globalStyle';
+import { Colors, Padding } from '../../constants/globalStyle';
 
 const onboardingData = [
   {
@@ -96,6 +97,12 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.skipContainer}
+        onPress={() => navigation.replace('Auth')}
+      >
+        <Text>Skip</Text>
+      </TouchableOpacity>
       {/* Onboarding Pages */}
       <FlatList
         ref={flatListRef}
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 16,
     backgroundColor: Colors.surface,
   },
-
+  skipContainer: { alignSelf: 'flex-end', paddingRight: Padding['2xl'] },
   page: {
     flex: 1,
     backgroundColor: Colors.surface,
