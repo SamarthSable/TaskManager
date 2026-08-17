@@ -29,7 +29,7 @@ import {
 
 import { fonts } from '../../../constants/fonts';
 
-import OtpIcon from '../../../assets/OtpIcon.svg';
+import { OtpIcon } from '../../../assets/svgs';
 
 import { sendOtpThunk, verifyOtpThunk } from '../../../redux/thunks/authThunks';
 
@@ -38,35 +38,35 @@ export default function VerificationScreen() {
   const route = useRoute();
   const dispatch = useDispatch();
 
-  /* =========================================
+  /* 
      EMAIL
-  ========================================= */
+   */
 
   const email = route.params?.email || '';
 
-  /* =========================================
+  /* 
      OTP
-  ========================================= */
+   */
 
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
 
   const inputRefs = useRef([]);
 
-  /* =========================================
+  /* 
      RESEND TIMER
-  ========================================= */
+   */
 
   const [countdown, setCountdown] = useState(45);
 
-  /* =========================================
+  /* 
      REDUX
-  ========================================= */
+   */
 
   const { resetLoading, error, otpVerified } = useSelector(state => state.auth);
 
-  /* =========================================
+  /* 
      COUNTDOWN
-  ========================================= */
+   */
 
   useEffect(() => {
     if (countdown <= 0) {
@@ -87,15 +87,15 @@ export default function VerificationScreen() {
     return () => clearInterval(timer);
   }, [countdown]);
 
-  /* =========================================
+  /* 
      FORMAT TIMER
-  ========================================= */
+   */
 
   const formattedCountdown = `0:${countdown.toString().padStart(2, '0')}`;
 
-  /* =========================================
+  /* 
      OTP CHANGE
-  ========================================= */
+   */
 
   const handleOtpChange = (value, index) => {
     // Only numbers
@@ -115,9 +115,9 @@ export default function VerificationScreen() {
     }
   };
 
-  /* =========================================
+  /* 
      BACKSPACE
-  ========================================= */
+   */
 
   const handleKeyPress = (event, index) => {
     if (event.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
@@ -125,9 +125,9 @@ export default function VerificationScreen() {
     }
   };
 
-  /* =========================================
+  /* 
      VERIFY OTP
-  ========================================= */
+   */
 
   const handleVerify = async () => {
     const otpCode = otp.join('');
@@ -164,9 +164,9 @@ export default function VerificationScreen() {
     }
   };
 
-  /* =========================================
+  /* 
      RESEND OTP
-  ========================================= */
+   */
 
   const handleResend = async () => {
     if (countdown > 0 || resetLoading) {
@@ -200,9 +200,9 @@ export default function VerificationScreen() {
     }
   };
 
-  /* =========================================
+  /* 
      UI
-  ========================================= */
+   */
 
   return (
     <SafeAreaView style={styles.container}>
@@ -307,9 +307,9 @@ export default function VerificationScreen() {
   );
 }
 
-/* =========================================
+/* 
    STYLES
-========================================= */
+ */
 
 const styles = StyleSheet.create({
   container: {
@@ -335,9 +335,9 @@ const styles = StyleSheet.create({
     paddingTop: Padding['2xl'],
   },
 
-  /* =========================================
+  /* 
      ICON
-  ========================================= */
+   */
 
   iconContainer: {
     width: ms(140),
@@ -353,9 +353,9 @@ const styles = StyleSheet.create({
     marginBottom: Margin.lg,
   },
 
-  /* =========================================
+  /* 
      TITLE
-  ========================================= */
+   */
 
   title: {
     fontFamily: fonts.bold,
@@ -369,9 +369,9 @@ const styles = StyleSheet.create({
     marginBottom: Margin.xs,
   },
 
-  /* =========================================
+  /* 
      DESCRIPTION
-  ========================================= */
+   */
 
   description: {
     fontFamily: fonts.regular,
@@ -397,9 +397,9 @@ const styles = StyleSheet.create({
     maxWidth: '90%',
   },
 
-  /* =========================================
+  /* 
      OTP
-  ========================================= */
+   */
 
   otpContainer: {
     width: '100%',
@@ -439,9 +439,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
 
-  /* =========================================
+  /* 
      ERROR
-  ========================================= */
+   */
 
   errorText: {
     width: '100%',
@@ -457,9 +457,9 @@ const styles = StyleSheet.create({
     marginTop: Margin.sm,
   },
 
-  /* =========================================
+  /* 
      BUTTON
-  ========================================= */
+   */
 
   verifyButton: {
     width: '100%',
@@ -467,9 +467,9 @@ const styles = StyleSheet.create({
     marginTop: Margin.lg,
   },
 
-  /* =========================================
+  /* 
      RESEND
-  ========================================= */
+   */
 
   resendLabel: {
     fontFamily: fonts.regular,

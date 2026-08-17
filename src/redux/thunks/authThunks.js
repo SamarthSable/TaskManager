@@ -107,9 +107,9 @@ export const getUserProfileThunk = createAsyncThunk(
       return rejectWithValue(getAuthErrorMessage(error));
     }
   },
-); /* =========================================
+); /* 
    SEND OTP
-========================================= */
+ */
 
 export const sendOtpThunk = createAsyncThunk(
   'auth/sendOtp',
@@ -135,9 +135,9 @@ export const sendOtpThunk = createAsyncThunk(
   },
 );
 
-/* =========================================
+/* 
    VERIFY OTP
-========================================= */
+ */
 
 export const verifyOtpThunk = createAsyncThunk(
   'auth/verifyOtp',
@@ -179,9 +179,9 @@ export const verifyOtpThunk = createAsyncThunk(
   },
 );
 
-/* =========================================
+/* 
    RESET PASSWORD
-========================================= */
+ */
 
 export const resetPasswordThunk = createAsyncThunk(
   'auth/resetPassword',

@@ -79,6 +79,7 @@ export const loginUser = async (email, password) => {
     const user = userCredential.user;
 
     // Return serializable object
+    console.log(user);
     return serializeUser(user);
   } catch (error) {
     console.log('Login Error:', error);

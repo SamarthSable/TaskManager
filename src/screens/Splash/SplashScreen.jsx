@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from '../../assets/Icon.svg';
-import Bg from '../../assets/Bg.svg';
+
+import { Bg, Icon } from '../../assets/svgs';
+
 import { fonts } from '../../constants/fonts';
 import { moderateScale } from 'react-native-size-matters';
 import DottedIndicator from '../../components/Common/DottedIndicator';

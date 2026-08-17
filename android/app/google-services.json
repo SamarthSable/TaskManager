@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1065033268256-k5f1kr9j8fi541mhriq7ir8jkv5k85m2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.taskmanager",
+            "certificate_hash": "32eb12c75587a64efa664910d6e58d7fdcbc5b0b"
+          }
+        },
+        {
           "client_id": "1065033268256-1f5enbfo2kbd6rfj98c5prj2cj7go1p8.apps.googleusercontent.com",
           "client_type": 3
         }

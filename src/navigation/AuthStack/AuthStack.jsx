@@ -5,7 +5,8 @@ import LoginScreen from '../../screens/Auth/login/loginScreen';
 import SignUpScreen from '../../screens/Auth/register/SignupScreen';
 import ForgotPassword from '../../screens/Auth/password/ForgotPassword';
 import VerificationScreen from '../../screens/Auth/password/VerificationScreen';
-import HomeScreen from '../../screens/Home/HomeScreen';
+import StackNavigator from '../MainStack/StackNavigator';
+import BottomTabNavigator from '../../navigation/MainStack/BottomTabNavigator';
 import ResetPasswordScreen from '../../screens/Auth/password/ResetPasswordScreen';
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +17,7 @@ export default function AuthStack() {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="ForgotPass" component={ForgotPassword} />
       <Stack.Screen name="Verification" component={VerificationScreen} />
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Main" component={StackNavigator} />
       <Stack.Screen name="ResetPass" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );

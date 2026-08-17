@@ -18,6 +18,10 @@ export const Colors = {
   background: '#F8FAFC',
   surface: '#FFFFFF',
 
+  //TabICon
+  active: '#2563EB',
+  inactive: '#9CA3AF',
+
   // Text
   textPrimary: '#111827',
   textSecondary: '#6B7280',

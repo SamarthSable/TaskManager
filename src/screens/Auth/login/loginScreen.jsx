@@ -30,16 +30,12 @@ import {
 import AppInput from '../../../components/Common/AppInput';
 import PrimaryButton from '../../../components/Common/PrimaryButton';
 
-import Email from '../../../assets/Email.svg';
-import Icon from '../../../assets/Icon.svg';
-import Google from '../../../assets/Google.svg';
-import Github from '../../../assets/Github.svg';
-import Lock from '../../../assets/Lock.svg';
-
+import { Email, Icon, Google, Github, Lock } from '../../../assets/svgs';
 import { fonts } from '../../../constants/fonts';
 
 import { loginThunk } from '../../../redux/thunks/authThunks';
 import { signInWithGoogle } from '../../../services/googleAuthService';
+import { showSnackbar } from '../../../redux/slices/snackbarSlice';
 
 export default function LoginScreen() {
   const navigation = useNavigation();
@@ -55,7 +51,13 @@ export default function LoginScreen() {
   // Email / Password Login
   const handleLogin = async () => {
     if (!email.trim()) {
-      console.log('Please enter your email');
+      console.log('Enter mail');
+      dispatch(
+        showSnackbar({
+          message: 'Please enter email and password.',
+          type: 'error',
+        }),
+      );
       return;
     }
 
@@ -74,7 +76,7 @@ export default function LoginScreen() {
 
       Alert.alert('Login successful:', JSON.stringify(user));
 
-      navigation.replace('Home');
+      navigation.replace('Main');
     } catch (error) {
       Alert.alert('Login failed:', error);
     }
@@ -93,7 +95,7 @@ export default function LoginScreen() {
 
       console.log('Google login successful:', user);
 
-      navigation.replace('Home');
+      navigation.replace('Main');
     } catch (error) {
       console.log('Google login failed:', error);
     } finally {

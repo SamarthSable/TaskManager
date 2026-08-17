@@ -9,10 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import Onboard1 from '../../assets/Onboard1.svg';
-import Onboard2 from '../../assets/Onboard2.svg';
-import Onboard3 from '../../assets/Onboard3.svg';
-
+import { Onboard1, Onboard2, Onboard3 } from '../../assets/svgs';
 import PrimaryButton from '../../components/Common/PrimaryButton';
 import DottedIndicator from '../../components/Common/DottedIndicator';
 import { useNavigation } from '@react-navigation/native';

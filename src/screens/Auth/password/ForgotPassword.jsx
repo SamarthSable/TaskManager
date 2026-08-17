@@ -191,9 +191,9 @@
 //     paddingTop: Padding['2xl'],
 //   },
 
-//   /* =========================================
+//   /*
 //      ILLUSTRATION
-//   ========================================= */
+//    */
 
 //   imageContainer: {
 //     width: ms(140),
@@ -205,9 +205,9 @@
 //     marginBottom: Margin.lg,
 //   },
 
-//   /* =========================================
+//   /*
 //      HEADING
-//   ========================================= */
+//    */
 
 //   title: {
 //     fontFamily: fonts.bold,
@@ -234,9 +234,9 @@
 //     marginBottom: Margin.xl,
 //   },
 
-//   /* =========================================
+//   /*
 //      INPUT
-//   ========================================= */
+//    */
 
 //   inputGroup: {
 //     width: '100%',
@@ -252,9 +252,9 @@
 //     paddingBottom: Padding.sm,
 //   },
 
-//   /* =========================================
+//   /*
 //      ERROR
-//   ========================================= */
+//    */
 
 //   errorText: {
 //     width: '100%',
@@ -267,9 +267,9 @@
 //     marginTop: Margin.sm,
 //   },
 
-//   /* =========================================
+//   /*
 //      BUTTON
-//   ========================================= */
+//    */
 
 //   button: {
 //     width: '100%',
@@ -277,9 +277,9 @@
 //     marginTop: Margin.lg,
 //   },
 
-//   /* =========================================
+//   /*
 //      BACK
-//   ========================================= */
+//    */
 
 //   backContainer: {
 //     flexDirection: 'row',
@@ -322,7 +322,7 @@ import {
   Padding,
 } from '../../../constants/globalStyle';
 
-import ForgotPass from '../../../assets/ForgotPass.svg';
+import { ForgotPass } from '../../../assets/svgs';
 import { fonts } from '../../../constants/fonts';
 import AppInput from '../../../components/Common/AppInput';
 
@@ -336,9 +336,9 @@ export default function ForgotPassword() {
 
   const navigation = useNavigation();
 
-  /* =========================================
+  /* 
      SEND PASSWORD RESET EMAIL
-  ========================================= */
+   */
 
   const handleSendResetEmail = async () => {
     const cleanEmail = email.trim().toLowerCase();
@@ -388,17 +388,17 @@ export default function ForgotPassword() {
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.content}>
-            {/* =========================================
+            {/* 
                 ILLUSTRATION
-            ========================================= */}
+             */}
 
             <View style={styles.imageContainer}>
               <ForgotPass width={ms(120)} height={ms(120)} />
             </View>
 
-            {/* =========================================
+            {/* 
                 HEADING
-            ========================================= */}
+             */}
 
             <Text style={styles.title}>Reset Password</Text>
 
@@ -407,9 +407,9 @@ export default function ForgotPassword() {
               your password.
             </Text>
 
-            {/* =========================================
+            {/* 
                 EMAIL INPUT
-            ========================================= */}
+             */}
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>EMAIL</Text>
@@ -432,9 +432,9 @@ export default function ForgotPassword() {
               />
             </View>
 
-            {/* =========================================
+            {/* 
                 SEND RESET LINK
-            ========================================= */}
+             */}
 
             <PrimaryButton
               title={loading ? 'Sending...' : 'Send Reset Link'}
@@ -443,9 +443,9 @@ export default function ForgotPassword() {
               disabled={loading}
             />
 
-            {/* =========================================
+            {/* 
                 BACK TO LOGIN
-            ========================================= */}
+             */}
 
             <TouchableOpacity
               style={styles.backContainer}
@@ -490,9 +490,9 @@ const styles = StyleSheet.create({
     paddingTop: Padding['2xl'],
   },
 
-  /* =========================================
+  /* 
      ILLUSTRATION
-  ========================================= */
+   */
 
   imageContainer: {
     width: ms(140),
@@ -504,9 +504,9 @@ const styles = StyleSheet.create({
     marginBottom: Margin.lg,
   },
 
-  /* =========================================
+  /* 
      HEADING
-  ========================================= */
+   */
 
   title: {
     fontFamily: fonts.bold,
@@ -533,9 +533,9 @@ const styles = StyleSheet.create({
     marginBottom: Margin.xl,
   },
 
-  /* =========================================
+  /* 
      INPUT
-  ========================================= */
+   */
 
   inputGroup: {
     width: '100%',
@@ -551,18 +551,18 @@ const styles = StyleSheet.create({
     paddingBottom: Padding.sm,
   },
 
-  /* =========================================
+  /* 
      BUTTON
-  ========================================= */
+   */
 
   button: {
     width: '100%',
     marginTop: Margin.lg,
   },
 
-  /* =========================================
+  /* 
      BACK
-  ========================================= */
+   */
 
   backContainer: {
     flexDirection: 'row',
