@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import {
+  BorderWidth,
   Colors,
   FontSizes,
+  Margin,
   Padding,
   Radius,
 } from '../../constants/globalStyle';
@@ -36,21 +38,20 @@ export default function ProjectCard({
 }) {
   return (
     <View style={styles.projectCard}>
-      {/* Project Icon */}
-      <View
-        style={[
-          styles.projectIcon,
-          {
-            backgroundColor: `${iconColor}18`,
-          },
-        ]}
-      >
-        <Ionicons name={icon} size={ms(21)} color={iconColor} />
-      </View>
-
       <View style={styles.projectContent}>
         {/* Top Section */}
         <View style={styles.projectTop}>
+          {/* Project Icon */}
+          <View
+            style={[
+              styles.projectIcon,
+              {
+                backgroundColor: `${iconColor}18`,
+              },
+            ]}
+          >
+            <Ionicons name={icon} size={ms(21)} color={iconColor} />
+          </View>
           <View style={styles.titleContainer}>
             <Text style={styles.projectTitle} numberOfLines={1}>
               {title}
@@ -173,20 +174,17 @@ export default function ProjectCard({
 const styles = StyleSheet.create({
   projectCard: {
     flexDirection: 'row',
-
     alignItems: 'flex-start',
 
-    marginHorizontal: Padding.lg,
-    marginBottom: vs(12),
-
-    padding: ms(14),
+    marginBottom: Margin.md,
+    padding: Padding.lg,
 
     backgroundColor: Colors.surface,
 
-    borderWidth: 1,
-    borderColor: '#E0E6EF',
+    borderWidth: BorderWidth.thin,
+    borderColor: Colors.border,
 
-    borderRadius: ms(17),
+    borderRadius: Radius.xl,
   },
 
   projectIcon: {
@@ -198,7 +196,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
 
-    marginRight: ms(12),
+    marginRight: Margin.md,
   },
 
   projectContent: {
@@ -217,7 +215,7 @@ const styles = StyleSheet.create({
 
   titleContainer: {
     flex: 1,
-    marginRight: ms(8),
+    marginRight: Margin.sm,
   },
 
   projectTitle: {
@@ -238,14 +236,14 @@ const styles = StyleSheet.create({
 
   priorityBadge: {
     paddingHorizontal: ms(11),
-    paddingVertical: vs(4),
+    paddingVertical: Padding.verticalXs,
 
     borderRadius: Radius.full,
   },
 
   priorityText: {
     fontFamily: fonts.semiBold,
-    fontSize: ms(10),
+    fontSize: FontSizes.labelSm,
   },
 
   infoRow: {
@@ -268,7 +266,7 @@ const styles = StyleSheet.create({
 
   infoText: {
     fontFamily: fonts.regular,
-    fontSize: ms(10),
+    fontSize: FontSizes.labelSm,
 
     color: '#6D7788',
   },
@@ -277,7 +275,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
 
     paddingHorizontal: ms(9),
-    paddingVertical: vs(4),
+    paddingVertical: Padding.verticalXs,
 
     borderRadius: Radius.full,
   },
@@ -304,7 +302,7 @@ const styles = StyleSheet.create({
 
     overflow: 'hidden',
 
-    marginRight: ms(8),
+    marginRight: Margin.sm,
   },
 
   progressFill: {
@@ -315,9 +313,9 @@ const styles = StyleSheet.create({
 
   progressText: {
     fontFamily: fonts.semiBold,
-    fontSize: ms(10),
+    fontSize: FontSizes.labelSm,
 
-    color: '#182230',
+    color: Colors.textPrimary,
 
     width: ms(30),
 

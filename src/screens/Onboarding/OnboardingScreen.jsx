@@ -72,7 +72,7 @@ export default function OnboardingScreen() {
       // Navigate to your next screen here
       // navigation.replace('Login');
 
-      navigation.replace('Auth');
+      navigation.navigate('Login');
     }
   };
 
@@ -96,7 +96,7 @@ export default function OnboardingScreen() {
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
         style={styles.skipContainer}
-        onPress={() => navigation.replace('Auth')}
+        onPress={() => navigation.navigate('Login')}
       >
         <Text>Skip</Text>
       </TouchableOpacity>

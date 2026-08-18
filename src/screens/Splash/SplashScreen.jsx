@@ -10,15 +10,15 @@ import DottedIndicator from '../../components/Common/DottedIndicator';
 import { useNavigation } from '@react-navigation/native';
 
 export default function SplashScreen() {
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('Onboarding');
-    }, 2000);
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     navigation.navigate('Onboarding');
+  //   }, 2000);
 
-    return () => clearTimeout(timer);
-  }, [navigation]);
+  //   return () => clearTimeout(timer);
+  // }, [navigation]);
   return (
     <LinearGradient
       start={{ x: 0, y: 0 }}

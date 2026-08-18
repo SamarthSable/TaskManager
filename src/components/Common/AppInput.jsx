@@ -20,6 +20,7 @@ const AppInput = ({
   leftIcon,
   onRightIconPress,
   inputStyle,
+  placeholderTextColor,
   ...props
 }) => {
   return (
@@ -37,7 +38,7 @@ const AppInput = ({
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor={'#000000'}
+        placeholderTextColor={placeholderTextColor}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}

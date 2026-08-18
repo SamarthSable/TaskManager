@@ -15,6 +15,7 @@ import ProjectCard from '../../components/Common/ProjectCard';
 import {
   Colors,
   FontSizes,
+  Heights,
   Margin,
   Padding,
   Radius,
@@ -41,6 +42,10 @@ const projects = [
     status: 'In Progress',
     statusColor: '#E5EDFF',
     statusTextColor: '#2260FF',
+    taskCount: 34,
+    memberCount: 6,
+    startDate: 'Oct 01',
+    endDate: 'Dec 28',
   },
 
   {
@@ -61,6 +66,10 @@ const projects = [
     status: 'Todo',
     statusColor: '#F1F3F6',
     statusTextColor: '#667085',
+    taskCount: 34,
+    memberCount: 6,
+    startDate: 'Oct 01',
+    endDate: 'Dec 28',
   },
 
   {
@@ -81,6 +90,10 @@ const projects = [
     status: 'Review',
     statusColor: '#FFF4E5',
     statusTextColor: '#B54708',
+    taskCount: 34,
+    memberCount: 6,
+    startDate: 'Oct 01',
+    endDate: 'Dec 28',
   },
 
   {
@@ -101,6 +114,10 @@ const projects = [
     status: 'Completed',
     statusColor: '#DDF7E5',
     statusTextColor: '#16803C',
+    taskCount: 34,
+    memberCount: 6,
+    startDate: 'Oct 01',
+    endDate: 'Dec 28',
   },
 ];
 
@@ -193,26 +210,34 @@ export default function Projects() {
         {/* Projects */}
         <View style={styles.projectsContainer}>
           {filteredProjects.map((project, index) => (
-            <ProjectCard
-              key={index}
-              varient="Projects"
-              icon="folder-outline"
-              iconColor={project.iconColor}
-              title={project.title}
-              owner={project.owner}
-              taskCount={project.taskCount}
-              teamCount={project.teamCount}
-              dueDate={project.dueDate}
-              progress={project.progress}
-              progressWidth={project.progressWidth}
-              progressColor={project.progressColor}
-              priority={project.priority}
-              priorityColor={project.priorityColor}
-              priorityTextColor={project.priorityTextColor}
-              status={project.status}
-              statusColor={project.statusColor}
-              statusTextColor={project.statusTextColor}
-            />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('ProjectDetail', {
+                  project,
+                })
+              }
+            >
+              <ProjectCard
+                key={index}
+                varient="Projects"
+                icon="folder-outline"
+                iconColor={project.iconColor}
+                title={project.title}
+                owner={project.owner}
+                taskCount={project.taskCount}
+                teamCount={project.teamCount}
+                dueDate={project.dueDate}
+                progress={project.progress}
+                progressWidth={project.progressWidth}
+                progressColor={project.progressColor}
+                priority={project.priority}
+                priorityColor={project.priorityColor}
+                priorityTextColor={project.priorityTextColor}
+                status={project.status}
+                statusColor={project.statusColor}
+                statusTextColor={project.statusTextColor}
+              />
+            </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
@@ -263,7 +288,7 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    height: vs(48),
+    height: Heights.inputSm,
     borderWidth: 1,
     borderColor: '#DCE3ED',
     borderRadius: Radius.full,

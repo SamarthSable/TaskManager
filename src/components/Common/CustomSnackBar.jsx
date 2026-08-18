@@ -3,7 +3,7 @@ import { Animated, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Colors, FontSizes } from '../../constants/globalStyle';
-import { FONTS } from '../../constants/Fonts';
+import { fonts } from '../../constants/fonts';
 
 export default function CustomSnackBar({
   visible,
@@ -62,13 +62,13 @@ export default function CustomSnackBar({
     switch (type) {
       case 'success':
         return {
-          color: Colors.sucess,
+          color: Colors.success,
           icon: 'checkmark-circle',
         };
 
       case 'error':
         return {
-          color: Colors.error,
+          color: Colors.danger,
           icon: 'close-circle',
         };
 
@@ -80,13 +80,13 @@ export default function CustomSnackBar({
 
       case 'info':
         return {
-          color: Colors.Primary,
+          color: Colors.primary,
           icon: 'information-circle',
         };
 
       default:
         return {
-          color: Colors.Primary,
+          color: Colors.primary,
           icon: 'information-circle',
         };
     }
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     bottom: 30,
     alignSelf: 'center',
     width: '90%',
-    backgroundColor: Colors.Background,
+    backgroundColor: Colors.surface,
     borderRadius: 14,
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     elevation: 8,
-    shadowColor: Colors.Black,
+    shadowColor: Colors.black,
     shadowOpacity: 0.15,
     shadowRadius: 10,
     shadowOffset: {
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
   message: {
     flex: 1,
     marginLeft: 10,
-    fontSize: FontSizes.Small,
-    fontFamily: FONTS.MEDIUM,
-    color: Colors.Text_Primary,
+    fontsize: FontSizes.Small,
+    fontFamily: fonts.medium,
+    color: Colors.textPrimary,
   },
 });

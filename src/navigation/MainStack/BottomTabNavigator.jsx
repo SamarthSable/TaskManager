@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Home, Profile, Team, Task, Folder } from '../../assets/svgs';
 import HomeScreen from '../../screens/Home/HomeScreen';
 import ProjectScreen from '../../screens/Projects/Projects';
+import ProfileScreen from '../../screens/Profile/ProfileScreen';
 import { Colors, Padding } from '../../constants/globalStyle';
 const Tab = createBottomTabNavigator();
 export default function BottomTabNavigator() {
@@ -78,7 +79,7 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="Profile"
-        component={HomeScreen}
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Profile

@@ -25,6 +25,7 @@ import {
   Heights,
   BorderWidth,
   Shadows,
+  Widths,
 } from '../../../constants/globalStyle';
 
 import AppInput from '../../../components/Common/AppInput';
@@ -74,9 +75,14 @@ export default function LoginScreen() {
         }),
       ).unwrap();
 
-      Alert.alert('Login successful:', JSON.stringify(user));
+      dispatch(
+        showSnackbar({
+          message: 'Login Succesfull.',
+          type: 'success',
+        }),
+      );
 
-      navigation.replace('Main');
+      navigation.replace('Stack');
     } catch (error) {
       Alert.alert('Login failed:', error);
     }
@@ -91,11 +97,14 @@ export default function LoginScreen() {
     try {
       setGoogleLoading(true);
 
-      const user = await signInWithGoogle();
+      await signInWithGoogle();
 
-      console.log('Google login successful:', user);
-
-      navigation.replace('Main');
+      dispatch(
+        showSnackbar({
+          message: 'Login Succesfull.',
+          type: 'success',
+        }),
+      );
     } catch (error) {
       console.log('Google login failed:', error);
     } finally {
@@ -140,6 +149,7 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
+              placeholderTextColor="#98A3B3"
               leftIcon={<Email width={22} height={22} />}
             />
           </View>
@@ -153,12 +163,13 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
+              placeholderTextColor={Colors.placeholder}
               leftIcon={<Lock width={22} height={22} />}
               rightIcon={
                 <Ionicons
                   name={showPassword ? 'eye-outline' : 'eye-off-outline'}
                   size={22}
-                  color="#94A3B8"
+                  color={Colors.placeholder}
                 />
               }
               onRightIconPress={() => setShowPassword(prev => !prev)}
@@ -259,7 +270,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    width: '100%',
+    width: Widths.full,
     alignItems: 'center',
     marginBottom: Margin.xl,
   },
@@ -277,7 +288,7 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
-    width: '100%',
+    width: Widths.full,
   },
 
   inputGroup: {
@@ -311,7 +322,7 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    width: '100%',
+    width: Widths.full,
   },
 
   divideContainer: {

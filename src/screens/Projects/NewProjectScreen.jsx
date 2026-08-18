@@ -28,6 +28,7 @@ import {
 import { fonts } from '../../constants/fonts';
 import PrimaryButton from '../../components/Common/PrimaryButton';
 import AppInput from '../../components/Common/AppInput';
+import Header from '../../components/Common/Header';
 
 export default function NewProjectScreen() {
   const navigation = useNavigation();
@@ -90,24 +91,7 @@ export default function NewProjectScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name="arrow-back"
-              size={ms(22)}
-              color={Colors.textPrimary}
-            />
-          </TouchableOpacity>
-
-          <Text style={styles.headerTitle}>New Project</Text>
-
-          <View style={styles.headerSpacer} />
-        </View>
-
+        <Header title={'New Project'} />
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"

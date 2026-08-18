@@ -13,8 +13,10 @@ import Svg, { Defs, LinearGradient, Path, Stop, Line } from 'react-native-svg';
 import StatCard from '../../components/Common/StatCard';
 import ProjectCard from '../../components/Common/ProjectCard';
 import {
+  BorderWidth,
   Colors,
   FontSizes,
+  Heights,
   Margin,
   Padding,
   Radius,
@@ -22,9 +24,12 @@ import {
 
 import { fonts } from '../../constants/fonts';
 import { useSelector } from 'react-redux';
+import { getAuth } from '@react-native-firebase/auth';
 
 export default function HomeScreen() {
   const user = useSelector(state => state.auth.user);
+  const profile = useSelector(state => state.auth.profile);
+  const currentUser = getAuth().currentUser;
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView
@@ -38,12 +43,23 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.profileSection}>
             <View style={styles.avatar}>
-              <Text style={styles.avatarText}>AC</Text>
+              <Text style={styles.avatarText}>
+                {currentUser?.displayName?.[0] ||
+                  profile?.firstName?.[0] ||
+                  'U'}
+                {profile?.lastName?.[0] || ''}
+              </Text>
             </View>
 
             <View>
               <Text style={styles.greeting}>Good morning 👋</Text>
-              <Text style={styles.userName}>Samarth Sable</Text>
+
+              <Text style={styles.userName}>
+                {/* {profile
+                  ? `${profile.firstName} ${profile.lastName}`.trim()
+                  : user?.displayName || 'User'} */}
+                {currentUser?.displayName || profile?.firstName || 'User'}
+              </Text>
             </View>
           </View>
 
@@ -67,7 +83,6 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
-
         {/* STAT CARDS */}
 
         <View style={styles.statsGrid}>
@@ -337,7 +352,7 @@ const styles = StyleSheet.create({
     paddingBottom: Padding.xl,
   },
 
-  /* 
+  /*
      HEADER
    */
 
@@ -347,12 +362,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
 
     paddingHorizontal: Padding.lg,
-    paddingTop: vs(12),
+    paddingTop: Padding.verticalMd,
     paddingBottom: vs(15),
 
     backgroundColor: Colors.surface,
 
-    borderBottomWidth: 1,
+    borderBottomWidth: BorderWidth.thin,
     borderBottomColor: '#E8ECF2',
   },
 
@@ -362,8 +377,8 @@ const styles = StyleSheet.create({
   },
 
   avatar: {
-    width: ms(40),
-    height: ms(40),
+    width: Heights.iconXl,
+    height: Heights.iconXl,
 
     borderRadius: Radius.full,
 
@@ -377,9 +392,9 @@ const styles = StyleSheet.create({
 
   avatarText: {
     fontFamily: fonts.semiBold,
-    fontSize: FontSizes.bodySm,
+    fontSize: FontSizes.bodyLg,
 
-    color: '#FFFFFF',
+    color: Colors.white,
   },
 
   greeting: {
@@ -400,7 +415,7 @@ const styles = StyleSheet.create({
 
   headerActions: {
     flexDirection: 'row',
-    gap: ms(8),
+    gap: Margin.sm,
   },
 
   headerButton: {
@@ -433,6 +448,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#F1F4F8',
   },
+
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -443,7 +459,7 @@ const styles = StyleSheet.create({
     paddingTop: Padding.lg,
   },
 
-  /* 
+  /*
      PROGRESS CARD
    */
 
@@ -452,14 +468,14 @@ const styles = StyleSheet.create({
 
     backgroundColor: Colors.surface,
 
-    borderWidth: 1,
+    borderWidth: BorderWidth.thin,
     borderColor: '#E0E6EF',
 
-    borderRadius: ms(17),
+    borderRadius: Radius.xl,
 
-    padding: ms(17),
+    padding: Padding.lg,
 
-    marginTop: ms(8),
+    marginTop: Margin.sm,
   },
 
   sectionTitle: {
@@ -494,7 +510,7 @@ const styles = StyleSheet.create({
 
   axisText: {
     fontFamily: fonts.regular,
-    fontSize: ms(9),
+    fontSize: FontSizes.labelSm,
 
     color: '#9AA5B5',
   },
@@ -509,7 +525,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
 
-  /* 
+  /*
      SECTION HEADER
    */
 
