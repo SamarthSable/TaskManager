@@ -19,6 +19,8 @@ import {
   Margin,
   Padding,
   Radius,
+  Spacing,
+  Widths,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 import { useNavigation } from '@react-navigation/native';
@@ -248,33 +250,32 @@ export default function Projects() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FC',
+    backgroundColor: Colors.background,
   },
 
   scrollContent: {
     paddingHorizontal: Padding.md,
-    paddingBottom: vs(100),
+    paddingBottom: Padding['3xl'],
   },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: vs(10),
-    marginBottom: vs(18),
+    paddingBottom: Padding.md,
   },
 
   title: {
     fontFamily: fonts.bold,
     fontSize: FontSizes.h3,
-    color: '#101828',
+    color: Colors.black,
   },
 
   addButton: {
-    width: ms(44),
-    height: ms(44),
-    borderRadius: ms(22),
-    backgroundColor: '#2260FF',
+    width: Heights.iconXl,
+    height: Heights.iconXl,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.active,
     alignItems: 'center',
     justifyContent: 'center',
 
@@ -290,9 +291,8 @@ const styles = StyleSheet.create({
   searchContainer: {
     height: Heights.inputSm,
     borderWidth: 1,
-    borderColor: '#DCE3ED',
+    borderColor: Colors.border,
     borderRadius: Radius.full,
-    backgroundColor: '#F9FAFC',
 
     flexDirection: 'row',
     alignItems: 'center',
@@ -302,43 +302,37 @@ const styles = StyleSheet.create({
 
   searchInput: {
     flex: 1,
-    marginLeft: ms(10),
-
     fontFamily: fonts.regular,
     fontSize: FontSizes.body,
-    color: '#101828',
   },
 
   filters: {
     flexDirection: 'row',
     alignItems: 'center',
-
-    marginTop: vs(14),
-    marginBottom: vs(14),
+    paddingVertical: Padding.verticalSm,
+    gap: Spacing.md,
   },
 
   filterButton: {
-    paddingHorizontal: ms(16),
-    paddingVertical: vs(8),
+    paddingHorizontal: Padding.horizontalLg,
+    paddingVertical: Padding.verticalXs,
 
     borderRadius: Radius.full,
-    backgroundColor: '#EEF1F5',
-
-    marginRight: ms(10),
+    backgroundColor: Colors.tabBg,
   },
 
   filterButtonActive: {
-    backgroundColor: '#2260FF',
+    backgroundColor: Colors.active,
   },
 
   filterText: {
     fontFamily: fonts.semiBold,
     fontSize: FontSizes.caption,
-    color: '#667085',
+    color: Colors.textSecondary,
   },
 
   filterTextActive: {
-    color: '#FFFFFF',
+    color: Colors.white,
   },
 
   projectsContainer: {

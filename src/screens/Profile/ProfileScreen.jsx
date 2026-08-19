@@ -1,22 +1,18 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
 
-import { logoutThunk } from '../../redux/thunks/authThunks';
+import { logoutUser } from '../../services/authServices';
 
 export default function ProfileScreen() {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const handleLogout = async () => {
     try {
-      await dispatch(logoutThunk()).unwrap();
+      await logoutUser();
 
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{ name: 'Auth' }],
-      // });
+      // Firebase auth listener in RootNavigator
+      // will automatically detect logout and show AuthStack.
       // navigation.navigate('Login');
     } catch (error) {
       console.log('Logout error:', error);
@@ -27,7 +23,11 @@ export default function ProfileScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>ProfileScreen</Text>
 
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={handleLogout}
+        activeOpacity={0.8}
+      >
         <Text style={styles.logoutText}>Logout</Text>
       </TouchableOpacity>
     </View>

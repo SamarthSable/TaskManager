@@ -84,25 +84,25 @@ import {
 
 import { db } from '../config/firebase';
 
-/* =========================================
+/* 
    GENERATE OTP
-========================================= */
+ */
 
 const generateOtp = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
-/* =========================================
+/* 
    FIRESTORE DOCUMENT ID
-========================================= */
+ */
 
 const getOtpDocId = email => {
   return encodeURIComponent(email.trim().toLowerCase());
 };
 
-/* =========================================
+/* 
    SEND OTP
-========================================= */
+ */
 
 export const sendOtp = async email => {
   const normalizedEmail = email.trim().toLowerCase();
@@ -124,9 +124,9 @@ export const sendOtp = async email => {
   const otpDocId = getOtpDocId(normalizedEmail);
 
   try {
-    /* =========================================
+    /* 
        1. STORE OTP IN FIRESTORE
-    ========================================= */
+     */
 
     await setDoc(doc(db, 'PasswordResetOTPs', otpDocId), {
       email: normalizedEmail,
@@ -144,9 +144,9 @@ export const sendOtp = async email => {
 
     console.log('OTP stored in Firestore');
 
-    /* =========================================
+    /* 
        2. SEND OTP USING EMAILJS
-    ========================================= */
+     */
 
     const body = {
       service_id: Config.EMAILJS_SERVICE_ID,
@@ -183,9 +183,9 @@ export const sendOtp = async email => {
     console.log('EmailJS Status:', response.status);
     console.log('EmailJS Response:', responseText);
 
-    /* =========================================
+    /* 
        3. EMAIL FAILED
-    ========================================= */
+     */
 
     if (!response.ok) {
       // Remove OTP because email was not sent
@@ -198,9 +198,9 @@ export const sendOtp = async email => {
       throw new Error(responseText || 'Unable to send OTP.');
     }
 
-    /* =========================================
+    /* 
        4. SUCCESS
-    ========================================= */
+     */
 
     return {
       email: normalizedEmail,
@@ -213,9 +213,9 @@ export const sendOtp = async email => {
   }
 };
 
-/* =========================================
+/* 
    VERIFY OTP
-========================================= */
+ */
 
 export const verifyOtp = async ({ email, enteredOtp }) => {
   const normalizedEmail = email.trim().toLowerCase();
@@ -223,9 +223,9 @@ export const verifyOtp = async ({ email, enteredOtp }) => {
   const otpDocId = getOtpDocId(normalizedEmail);
 
   try {
-    /* =========================================
+    /* 
        GET OTP FROM FIRESTORE
-    ========================================= */
+     */
 
     const otpDocument = await getDoc(doc(db, 'PasswordResetOTPs', otpDocId));
 
@@ -235,9 +235,9 @@ export const verifyOtp = async ({ email, enteredOtp }) => {
 
     const otpData = otpDocument.data();
 
-    /* =========================================
+    /* 
        CHECK EXPIRATION
-    ========================================= */
+     */
 
     if (Date.now() > otpData.expiresAt) {
       await deleteDoc(doc(db, 'PasswordResetOTPs', otpDocId));
@@ -247,17 +247,17 @@ export const verifyOtp = async ({ email, enteredOtp }) => {
       );
     }
 
-    /* =========================================
+    /* 
        CHECK OTP
-    ========================================= */
+     */
 
     if (enteredOtp.trim() !== otpData.otp) {
       throw new Error('Invalid OTP. Please check and try again.');
     }
 
-    /* =========================================
+    /* 
        MARK OTP VERIFIED
-    ========================================= */
+     */
 
     await setDoc(
       doc(db, 'PasswordResetOTPs', otpDocId),
@@ -278,9 +278,9 @@ export const verifyOtp = async ({ email, enteredOtp }) => {
   }
 };
 
-/* =========================================
+/* 
    CHECK OTP VERIFIED
-========================================= */
+ */
 
 export const isOtpVerified = async email => {
   const normalizedEmail = email.trim().toLowerCase();

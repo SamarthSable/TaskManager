@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -10,44 +10,70 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms, vs } from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Svg, { Defs, LinearGradient, Path, Stop, Line } from 'react-native-svg';
+
 import StatCard from '../../components/Common/StatCard';
 import ProjectCard from '../../components/Common/ProjectCard';
+
 import {
-  BorderWidth,
   Colors,
   FontSizes,
-  Heights,
   Margin,
   Padding,
   Radius,
+  Heights,
+  BorderWidth,
+  Widths,
 } from '../../constants/globalStyle';
 
 import { fonts } from '../../constants/fonts';
-import { useSelector } from 'react-redux';
+
 import { getAuth } from '@react-native-firebase/auth';
+import { getUserProfile } from '../../services/authServices';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
-  const user = useSelector(state => state.auth.user);
-  const profile = useSelector(state => state.auth.profile);
+  const navigation = useNavigation();
+  const [profile, setProfile] = useState(null);
+
   const currentUser = getAuth().currentUser;
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (!currentUser?.uid) {
+        return;
+      }
+
+      try {
+        const userProfile = await getUserProfile(currentUser.uid);
+
+        setProfile(userProfile);
+      } catch (error) {
+        console.log('Failed to load user profile:', error);
+      }
+    };
+
+    loadProfile();
+  }, [currentUser?.uid]);
+
+  const firstName =
+    profile?.firstName || currentUser?.displayName?.split(' ')[0] || 'User';
+
+  const lastName = profile?.lastName || '';
+
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* 
-            HEADER
-         */}
+        {/* HEADER */}
 
         <View style={styles.header}>
           <View style={styles.profileSection}>
             <View style={styles.avatar}>
               <Text style={styles.avatarText}>
-                {currentUser?.displayName?.[0] ||
-                  profile?.firstName?.[0] ||
-                  'U'}
-                {profile?.lastName?.[0] || ''}
+                {firstName?.[0]?.toUpperCase() || 'U'}
+                {lastName?.[0]?.toUpperCase() || ''}
               </Text>
             </View>
 
@@ -55,10 +81,7 @@ export default function HomeScreen() {
               <Text style={styles.greeting}>Good morning 👋</Text>
 
               <Text style={styles.userName}>
-                {/* {profile
-                  ? `${profile.firstName} ${profile.lastName}`.trim()
-                  : user?.displayName || 'User'} */}
-                {currentUser?.displayName || profile?.firstName || 'User'}
+                {`${firstName} ${lastName}`.trim()}
               </Text>
             </View>
           </View>
@@ -83,13 +106,14 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
         {/* STAT CARDS */}
 
         <View style={styles.statsGrid}>
           <StatCard
             icon="folder-outline"
             iconColor={Colors.primary}
-            iconBackground="#EEF4FF"
+            iconBackground={Colors.projectBg}
             value="12"
             label="Projects"
             change="+2"
@@ -98,8 +122,8 @@ export default function HomeScreen() {
 
           <StatCard
             icon="checkbox-outline"
-            iconColor="#8B45FF"
-            iconBackground="#F3E9FF"
+            iconColor={Colors.secondary}
+            iconBackground={Colors.chkBg}
             value="84"
             label="Tasks"
             change="+8"
@@ -108,8 +132,8 @@ export default function HomeScreen() {
 
           <StatCard
             icon="time-outline"
-            iconColor="#FF9900"
-            iconBackground="#FFF6E9"
+            iconColor={Colors.warning}
+            iconBackground={Colors.pendingBg}
             value="23"
             label="Pending"
             change="-3"
@@ -117,8 +141,8 @@ export default function HomeScreen() {
 
           <StatCard
             icon="checkmark-circle-outline"
-            iconColor="#16C875"
-            iconBackground="#E4FAED"
+            iconColor={Colors.success}
+            iconBackground={Colors.doneBg}
             value="61"
             label="Done"
             change="+11"
@@ -126,9 +150,7 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* 
-            WEEKLY PROGRESS
-         */}
+        {/* WEEKLY PROGRESS */}
 
         <View style={styles.progressCard}>
           <Text style={styles.sectionTitle}>Weekly Progress</Text>
@@ -136,68 +158,58 @@ export default function HomeScreen() {
           <WeeklyChart />
         </View>
 
-        {/* 
-            ACTIVE PROJECTS HEADER
-         */}
+        {/* ACTIVE PROJECTS */}
 
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Active Projects</Text>
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Projects')}>
             <Text style={styles.seeAll}>See All</Text>
           </TouchableOpacity>
         </View>
+        <View style={{ paddingHorizontal: ms(12) }}>
+          <ProjectCard
+            varient="Home"
+            icon="folder-outline"
+            title="Mobile App Redesign"
+            progress="68%"
+            progressWidth="68%"
+            priority="High"
+            priorityColor={Colors.warningLight}
+            priorityTextColor={Colors.warningDark}
+          />
 
-        {/* 
-            PROJECT 1
-         */}
+          <ProjectCard
+            varient="Home"
+            icon="folder-outline"
+            title="Api Integration v3"
+            progress="45%"
+            progressWidth="45%"
+            priority="Critical"
+            priorityColor={Colors.dangerLight}
+            priorityTextColor={Colors.dangerDark}
+          />
 
-        <ProjectCard
-          varient={'Home'}
-          icon="folder-outline"
-          title="Mobile App Redesign"
-          progress="68%"
-          progressWidth="68%"
-          priority="High"
-          priorityColor="#FFF0BE"
-          priorityTextColor="#B77A00"
-        />
-
-        {/* 
-            PROJECT 2
-         */}
-
-        <ProjectCard
-          varient={'Home'}
-          icon="folder-outline"
-          title="Api Integration v3"
-          progress="45%"
-          progressWidth="45%"
-          priority="Critical"
-          priorityColor="#EDE8FF"
-          priorityTextColor="#7957D5"
-        />
-        <ProjectCard
-          varient={'Home'}
-          icon="folder-outline"
-          title="Dashboard Analytics"
-          progress="45%"
-          progressWidth="45%"
-          priority="Medium"
-          priorityColor="#EDE8FF"
-          priorityTextColor="#7957D5"
-        />
-
-        {/* Bottom spacing for tab navigator */}
+          <ProjectCard
+            varient="Home"
+            icon="folder-outline"
+            title="Dashboard Analytics"
+            progress="45%"
+            progressWidth="45%"
+            priority="Medium"
+            priorityColor={Colors.mediumLight}
+            priorityTextColor={Colors.mediumDark}
+          />
+        </View>
         <View style={{ height: vs(30) }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-/* ========
+/* 
    WEEKLY CHART
-======== */
+ */
 
 function WeeklyChart() {
   const chartWidth = ms(300);
@@ -220,9 +232,13 @@ function WeeklyChart() {
           <Svg width={chartWidth} height={chartHeight} viewBox="0 0 300 125">
             <Defs>
               <LinearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor="#7B4CFF" stopOpacity="0.20" />
+                <Stop
+                  offset="0"
+                  stopColor={Colors.secondary}
+                  stopOpacity="0.20"
+                />
 
-                <Stop offset="1" stopColor="#7B4CFF" stopOpacity="0" />
+                <Stop offset="1" stopColor={Colors.secondary} stopOpacity="0" />
               </LinearGradient>
             </Defs>
 
@@ -233,7 +249,7 @@ function WeeklyChart() {
               y1="5"
               x2="300"
               y2="5"
-              stroke="#E8EDF5"
+              stroke={Colors.border}
               strokeDasharray="3 4"
             />
 
@@ -242,7 +258,7 @@ function WeeklyChart() {
               y1="31"
               x2="300"
               y2="31"
-              stroke="#E8EDF5"
+              stroke={Colors.border}
               strokeDasharray="3 4"
             />
 
@@ -251,7 +267,7 @@ function WeeklyChart() {
               y1="57"
               x2="300"
               y2="57"
-              stroke="#E8EDF5"
+              stroke={Colors.border}
               strokeDasharray="3 4"
             />
 
@@ -260,7 +276,7 @@ function WeeklyChart() {
               y1="83"
               x2="300"
               y2="83"
-              stroke="#E8EDF5"
+              stroke={Colors.border}
               strokeDasharray="3 4"
             />
 
@@ -269,7 +285,7 @@ function WeeklyChart() {
               y1="109"
               x2="300"
               y2="109"
-              stroke="#E8EDF5"
+              stroke={Colors.border}
               strokeDasharray="3 4"
             />
 
@@ -282,7 +298,7 @@ function WeeklyChart() {
                 y1="0"
                 x2={x}
                 y2="110"
-                stroke="#EEF1F6"
+                stroke={Colors.border}
                 strokeDasharray="3 4"
               />
             ))}
@@ -318,7 +334,7 @@ function WeeklyChart() {
                 C 282 103, 292 105, 300 106
               "
               fill="none"
-              stroke="#7444FF"
+              stroke={Colors.secondary}
               strokeWidth="2.5"
             />
           </Svg>
@@ -338,14 +354,14 @@ function WeeklyChart() {
   );
 }
 
-/* ========
+/* 
    STYLES
-======== */
+ */
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FC',
+    backgroundColor: Colors.background,
   },
 
   scrollContent: {
@@ -363,12 +379,12 @@ const styles = StyleSheet.create({
 
     paddingHorizontal: Padding.lg,
     paddingTop: Padding.verticalMd,
-    paddingBottom: vs(15),
+    paddingBottom: Padding.lg,
 
     backgroundColor: Colors.surface,
 
     borderBottomWidth: BorderWidth.thin,
-    borderBottomColor: '#E8ECF2',
+    borderBottomColor: Colors.border,
   },
 
   profileSection: {
@@ -402,8 +418,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.caption,
 
     color: Colors.textSecondary,
-
-    marginBottom: 2,
   },
 
   userName: {
@@ -419,12 +433,12 @@ const styles = StyleSheet.create({
   },
 
   headerButton: {
-    width: ms(38),
-    height: ms(38),
+    width: Widths.iconXl,
+    height: Heights.iconXl,
 
     borderRadius: Radius.full,
 
-    backgroundColor: '#F1F4F8',
+    backgroundColor: Colors.background,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -435,18 +449,18 @@ const styles = StyleSheet.create({
   notificationDot: {
     position: 'absolute',
 
-    width: ms(8),
-    height: ms(8),
+    width: Widths.xs,
+    height: Heights.xs,
 
     borderRadius: Radius.full,
 
-    backgroundColor: '#FF4D4F',
+    backgroundColor: Colors.danger,
 
     top: ms(7),
     right: ms(7),
 
     borderWidth: 1.5,
-    borderColor: '#F1F4F8',
+    borderColor: Colors.border,
   },
 
   statsGrid: {
@@ -469,7 +483,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
 
     borderWidth: BorderWidth.thin,
-    borderColor: '#E0E6EF',
+    borderColor: Colors.border,
 
     borderRadius: Radius.xl,
 
@@ -486,7 +500,7 @@ const styles = StyleSheet.create({
   },
 
   chartWrapper: {
-    marginTop: vs(10),
+    paddingTop: Padding.md,
   },
 
   chartArea: {
@@ -499,8 +513,6 @@ const styles = StyleSheet.create({
     height: vs(125),
 
     justifyContent: 'space-between',
-
-    paddingVertical: 0,
   },
 
   chart: {
@@ -512,17 +524,12 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: FontSizes.labelSm,
 
-    color: '#9AA5B5',
+    color: Colors.inactive,
   },
 
   xLabels: {
     flexDirection: 'row',
-
     justifyContent: 'space-between',
-
-    marginTop: vs(2),
-
-    paddingHorizontal: 0,
   },
 
   /*
@@ -538,8 +545,8 @@ const styles = StyleSheet.create({
 
     paddingHorizontal: Padding.lg,
 
-    marginTop: vs(23),
-    marginBottom: vs(13),
+    paddingTop: Padding.xl,
+    paddingBottom: Padding.md,
   },
 
   seeAll: {

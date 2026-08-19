@@ -36,6 +36,10 @@ export const Colors = {
   successLight: '#DCFCE7',
   warningLight: '#FEF3C7',
   dangerLight: '#FEE2E2',
+  dangerDark: '#991B1B',
+  warningDark: '#92400E',
+  mediumLight: '#E0F2FE',
+  mediumDark: '#0369A1',
 
   // Other
   placeholder: '#94A3B8',
@@ -44,6 +48,15 @@ export const Colors = {
   white: '#FFFFFF',
   black: '#000000',
   transparent: 'transparent',
+
+  // StatsCard
+  projectBg: '#EFF6FF',
+  chkBg: '#F3E8FF',
+  doneBg: '#DCFCE7',
+  pendingBg: '#FFF7ED',
+
+  //TabBg
+  tabBg: '#F1F5F9',
 };
 
 /* 
@@ -239,6 +252,8 @@ export const Radius = {
  */
 
 export const Heights = {
+  full: '100%',
+  xs: vs(8),
   // Inputs / Buttons
   input: vs(52),
   button: vs(52),
@@ -246,6 +261,8 @@ export const Heights = {
 
   // Small controls
   inputSm: vs(32),
+  inputs: vs(38),
+  inputm: vs(44),
   buttonSm: vs(44),
 
   // Large controls
@@ -253,15 +270,23 @@ export const Heights = {
   buttonLg: vs(56),
 
   // Icons
+  icon: ms(12),
   iconXs: ms(16),
   iconSm: ms(20),
   iconMd: ms(24),
   iconLg: ms(32),
   iconXl: ms(40),
   icon2xl: ms(48),
+  icon3xl: ms(64),
 
   // Header
   header: vs(56),
+
+  //Cards
+  statCard: vs(80),
+
+  // ProgressHeight
+  progressBar: vs(6),
 };
 
 /* 
@@ -270,13 +295,14 @@ export const Heights = {
 
 export const Widths = {
   full: '100%',
-
+  xs: s(8),
   iconXs: s(16),
   iconSm: s(20),
   iconMd: s(24),
   iconLg: s(32),
   iconXl: s(40),
   icon2xl: s(48),
+  icon3xl: ms(64),
 
   buttonSm: s(120),
   buttonMd: s(160),

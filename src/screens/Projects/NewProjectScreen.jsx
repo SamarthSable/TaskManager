@@ -24,6 +24,7 @@ import {
   Padding,
   Radius,
   Spacing,
+  Widths,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 import PrimaryButton from '../../components/Common/PrimaryButton';
@@ -363,98 +364,28 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* Header */
-
-  header: {
-    height: vs(68),
-
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-
-    paddingHorizontal: Padding.lg,
-
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5EAF1',
-  },
-
-  backButton: {
-    width: ms(40),
-    height: ms(40),
-
-    borderRadius: Radius.full,
-
-    backgroundColor: '#F1F4F8',
-
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  headerTitle: {
-    fontFamily: fonts.semiBold,
-    fontSize: FontSizes.h4,
-
-    color: Colors.textPrimary,
-  },
-
-  headerSpacer: {
-    width: ms(40),
-  },
-
   /* Scroll */
 
   scrollContent: {
     paddingHorizontal: Padding.lg,
-    paddingTop: vs(20),
-    paddingBottom: vs(30),
+    paddingTop: Padding.sm,
+    paddingBottom: Padding.lg,
   },
 
   /* Labels */
 
   fieldContainer: {
-    marginBottom: vs(19),
+    paddingBottom: Padding.md,
   },
 
   label: {
     fontFamily: fonts.semiBold,
-    fontSize: ms(12),
-
-    color: '#6D7788',
-
-    marginBottom: vs(9),
-
-    letterSpacing: 0.3,
-  },
-
-  /* Normal Input */
-
-  inputContainer: {
-    height: vs(48),
-
-    flexDirection: 'row',
-    alignItems: 'center',
-
-    paddingHorizontal: ms(14),
-
-    borderWidth: 1,
-    borderColor: '#DEE5EE',
-
-    borderRadius: Radius.full,
-
-    backgroundColor: '#F8FAFC',
-  },
-
-  input: {
-    flex: 1,
-
-    marginLeft: ms(10),
-
-    paddingVertical: 0,
-
-    fontFamily: fonts.regular,
     fontSize: FontSizes.bodySm,
 
-    color: Colors.textPrimary,
+    color: Colors.textSecondary,
+
+    // marginBottom: vs(9),
+    paddingBottom: Padding.sm,
   },
 
   /* Description */
@@ -463,18 +394,16 @@ const styles = StyleSheet.create({
     height: LineHeights.display2xl,
 
     borderWidth: 1,
-    borderColor: '#DEE5EE',
+    borderColor: Colors.border,
 
-    borderRadius: ms(22),
-
-    backgroundColor: '#F8FAFC',
+    borderRadius: Radius['3xl'],
   },
 
   descriptionInput: {
     flex: 1,
 
-    paddingHorizontal: ms(14),
-    paddingVertical: vs(12),
+    paddingHorizontal: Padding.horizontalMd,
+    paddingVertical: Padding.verticalSm,
 
     fontFamily: fonts.regular,
     fontSize: FontSizes.bodySm,
@@ -488,8 +417,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
 
     gap: Spacing.md,
-
-    marginBottom: vs(19),
+    paddingBottom: Padding.verticalSm,
   },
 
   dateField: {
@@ -502,23 +430,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: ms(13),
+    paddingHorizontal: Padding.horizontalMd,
 
     borderWidth: 1,
-    borderColor: '#DEE5EE',
+    borderColor: Colors.border,
 
     borderRadius: Radius.full,
-
-    backgroundColor: '#F8FAFC',
+    gap: Spacing.sm,
   },
 
   dateText: {
-    marginLeft: ms(9),
-
     fontFamily: fonts.regular,
     fontSize: FontSizes.bodySm,
 
-    color: '#7D8797',
+    color: Colors.textSecondary,
   },
 
   /* Priority */
@@ -528,7 +453,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'space-between',
 
-    gap: ms(9),
+    gap: Spacing.sm,
   },
 
   priorityButton: {
@@ -541,7 +466,7 @@ const styles = StyleSheet.create({
 
     borderRadius: Radius.full,
 
-    backgroundColor: '#F1F4F8',
+    backgroundColor: Colors.tabBg,
   },
 
   priorityButtonActive: {
@@ -550,9 +475,9 @@ const styles = StyleSheet.create({
 
   priorityText: {
     fontFamily: fonts.semiBold,
-    fontSize: ms(12),
+    fontSize: FontSizes.bodySm,
 
-    color: '#6D7788',
+    color: Colors.textSecondary,
   },
 
   priorityTextActive: {
@@ -568,14 +493,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
 
-    paddingHorizontal: ms(14),
+    paddingHorizontal: Padding.horizontalMd,
 
     borderWidth: 1,
-    borderColor: '#DEE5EE',
+    borderColor: Colors.border,
 
     borderRadius: Radius.full,
-
-    backgroundColor: '#F8FAFC',
   },
 
   selectText: {
@@ -586,7 +509,7 @@ const styles = StyleSheet.create({
   },
 
   placeholderText: {
-    color: '#7D8797',
+    color: Colors.textSecondary,
   },
 
   /* Add Members */
@@ -597,58 +520,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: ms(13),
-    paddingVertical: vs(8),
+    paddingHorizontal: Padding.horizontalMd,
+    paddingVertical: Padding.verticalSm,
 
     borderWidth: 1.5,
-    borderColor: '#D8E3F4',
+    borderColor: Colors.border,
 
     borderStyle: 'dashed',
 
     borderRadius: Radius.full,
-
-    backgroundColor: '#F9FBFF',
+    gap: Spacing.sm,
   },
 
   addMembersText: {
-    marginLeft: ms(7),
-
     fontFamily: fonts.semiBold,
-    fontSize: ms(12),
-
+    fontSize: FontSizes.bodySm,
     color: Colors.primary,
-  },
-
-  /* Create */
-
-  createButton: {
-    height: vs(58),
-
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    marginTop: vs(2),
-
-    borderRadius: ms(18),
-
-    backgroundColor: Colors.primary,
-
-    shadowColor: Colors.primary,
-    shadowOffset: {
-      width: 0,
-      height: 7,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-
-    elevation: 6,
-  },
-
-  createButtonText: {
-    fontFamily: fonts.semiBold,
-    fontSize: FontSizes.body,
-
-    color: Colors.surface,
   },
 
   /* Modal */

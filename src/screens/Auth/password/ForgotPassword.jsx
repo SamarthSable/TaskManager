@@ -306,14 +306,17 @@ import {
   Platform,
   ScrollView,
   View,
-  Alert,
 } from 'react-native';
 import React, { useState } from 'react';
+
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../../components/Common/Header';
 import PrimaryButton from '../../../components/Common/PrimaryButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ms } from 'react-native-size-matters';
+
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
 
 import {
   Colors,
@@ -326,51 +329,100 @@ import { ForgotPass } from '../../../assets/svgs';
 import { fonts } from '../../../constants/fonts';
 import AppInput from '../../../components/Common/AppInput';
 
-import { useNavigation } from '@react-navigation/native';
-
 import { getAuth } from '@react-native-firebase/auth';
 
+import { showSnackbar } from '../../../redux/slices/snackbarSlice';
+
 export default function ForgotPassword() {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const navigation = useNavigation();
-
-  /* 
-     SEND PASSWORD RESET EMAIL
+  /*
+   * SEND PASSWORD RESET EMAIL
    */
 
   const handleSendResetEmail = async () => {
     const cleanEmail = email.trim().toLowerCase();
+
+    /*
+     * VALIDATION
+     */
+
     if (!cleanEmail) {
-      Alert.alert('Error', 'Please enter your email address.');
+      dispatch(
+        showSnackbar({
+          message: 'Please enter your email address.',
+          type: 'error',
+        }),
+      );
       return;
     }
+
     setLoading(true);
+
     try {
+      /*
+       * Firebase directly sends the
+       * password reset email.
+       */
+
       await getAuth().sendPasswordResetEmail(cleanEmail);
-      setLoading(false);
-      Alert.alert(
-        'Reset Link Sent',
-        `A password reset link has been sent to ${cleanEmail}. Please check your email inbox and open the link to set a new password.`,
-        [
-          {
-            text: 'Back to Sign In',
-            onPress: () => navigation.navigate('Login'),
-          },
-        ],
+
+      /*
+       * SUCCESS
+       */
+
+      dispatch(
+        showSnackbar({
+          message: 'Password reset link sent successfully.',
+          type: 'success',
+        }),
       );
+
+      /*
+       * Go back to Login.
+       */
+
+      navigation.navigate('Login');
     } catch (error) {
-      setLoading(false);
-      console.log('Error sending reset email:', error);
-      // Handle common Firebase Auth errors
-      if (error.code === 'auth/user-not-found') {
-        Alert.alert('Error', 'No registered account found with this email.');
-      } else if (error.code === 'auth/invalid-email') {
-        Alert.alert('Error', 'Please enter a valid email address.');
-      } else {
-        Alert.alert('Error', error?.message || 'Failed to send reset email.');
+      /*
+       * FIREBASE ERROR HANDLING
+       */
+
+      let message = 'Failed to send reset email.';
+
+      switch (error?.code) {
+        case 'auth/user-not-found':
+          message = 'No registered account found with this email.';
+          break;
+
+        case 'auth/invalid-email':
+          message = 'Please enter a valid email address.';
+          break;
+
+        case 'auth/too-many-requests':
+          message = 'Too many requests. Please try again later.';
+          break;
+
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+          break;
+
+        default:
+          message = error?.message || message;
       }
+
+      dispatch(
+        showSnackbar({
+          message,
+          type: 'error',
+        }),
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -490,7 +542,7 @@ const styles = StyleSheet.create({
     paddingTop: Padding['2xl'],
   },
 
-  /* 
+  /*
      ILLUSTRATION
    */
 
@@ -504,7 +556,7 @@ const styles = StyleSheet.create({
     marginBottom: Margin.lg,
   },
 
-  /* 
+  /*
      HEADING
    */
 
@@ -533,7 +585,7 @@ const styles = StyleSheet.create({
     marginBottom: Margin.xl,
   },
 
-  /* 
+  /*
      INPUT
    */
 
@@ -551,7 +603,7 @@ const styles = StyleSheet.create({
     paddingBottom: Padding.sm,
   },
 
-  /* 
+  /*
      BUTTON
    */
 
@@ -560,7 +612,7 @@ const styles = StyleSheet.create({
     marginTop: Margin.lg,
   },
 
-  /* 
+  /*
      BACK
    */
 

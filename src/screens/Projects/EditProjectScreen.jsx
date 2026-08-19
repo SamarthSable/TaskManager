@@ -20,6 +20,7 @@ import {
   Margin,
   Padding,
   Radius,
+  Spacing,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 
@@ -62,7 +63,7 @@ export default function EditProjectScreen({ navigation, route }) {
   const [priority, setPriority] = useState(project.priority);
   const [manager, setManager] = useState(project.manager);
   const [teamMembers, setTeamMembers] = useState(project.teamMembers || []);
-
+  console.log(teamMembers);
   const priorities = ['Low', 'Medium', 'High', 'Critical'];
 
   const handleRemoveMember = index => {
@@ -170,8 +171,6 @@ export default function EditProjectScreen({ navigation, route }) {
           <TextInput
             value={description}
             onChangeText={setDescription}
-            placeholder="Project description..."
-            placeholderTextColor="#98A3B3"
             multiline
             textAlignVertical="top"
             style={styles.descriptionInput}
@@ -348,7 +347,7 @@ const styles = StyleSheet.create({
 
     borderRadius: Radius.full,
 
-    backgroundColor: '#FFE1E3',
+    backgroundColor: Colors.dangerLight,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -359,17 +358,15 @@ const styles = StyleSheet.create({
   content: {
     paddingHorizontal: Padding.lg,
     paddingTop: Padding.verticalXl,
-    paddingBottom: vs(30),
+    paddingBottom: Padding['3xl'],
   },
 
   label: {
     fontFamily: fonts.semiBold,
     fontSize: FontSizes.bodySm,
+    color: Colors.textSecondary,
 
-    color: '#6D7788',
-
-    marginBottom: Padding.verticalSm,
-    marginTop: vs(17),
+    paddingVertical: Padding.verticalXs,
   },
 
   /* Input */
@@ -383,9 +380,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Padding.lg,
 
     borderWidth: BorderWidth.thin,
-    borderColor: '#DCE4ED',
+    borderColor: Colors.border,
 
-    borderRadius: ms(28),
+    borderRadius: Radius['3xl'],
 
     backgroundColor: Colors.background,
   },
@@ -404,25 +401,23 @@ const styles = StyleSheet.create({
   /* Description */
 
   descriptionContainer: {
-    height: vs(87),
+    height: Heights.inputLg,
 
     borderWidth: BorderWidth.thin,
-    borderColor: '#DCE4ED',
+    borderColor: Colors.border,
 
-    borderRadius: ms(24),
+    borderRadius: Radius['3xl'],
 
     backgroundColor: Colors.background,
 
     paddingHorizontal: Padding.lg,
-    paddingVertical: vs(10),
+    paddingVertical: Padding.md,
   },
 
   descriptionInput: {
     flex: 1,
-
     fontFamily: fonts.regular,
     fontSize: FontSizes.body,
-
     color: Colors.textPrimary,
   },
 
@@ -431,7 +426,7 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: 'row',
 
-    gap: ms(15),
+    gap: Spacing.md,
   },
 
   dateColumn: {
@@ -439,19 +434,20 @@ const styles = StyleSheet.create({
   },
 
   dateInput: {
-    height: Heights.buttonSm,
+    height: Heights.inputs,
 
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: ms(15),
+    paddingHorizontal: Padding.md,
 
     borderWidth: BorderWidth.thin,
-    borderColor: '#DCE4ED',
+    borderColor: Colors.border,
 
-    borderRadius: ms(28),
+    borderRadius: Radius['3xl'],
 
     backgroundColor: Colors.background,
+    gap: Spacing.sm,
   },
 
   dateText: {
@@ -459,8 +455,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
 
     color: Colors.textPrimary,
-
-    marginLeft: ms(11),
   },
 
   /* Priority */
@@ -468,17 +462,17 @@ const styles = StyleSheet.create({
   priorityContainer: {
     flexDirection: 'row',
 
-    gap: ms(10),
+    gap: Spacing.sm,
   },
 
   priorityButton: {
     flex: 1,
 
-    height: Heights.buttonSm,
+    height: Heights.inputSm,
 
-    borderRadius: ms(24),
+    borderRadius: Radius['3xl'],
 
-    backgroundColor: '#F1F4F8',
+    backgroundColor: Colors.tabBg,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -492,7 +486,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: FontSizes.bodySm,
 
-    color: '#6D7788',
+    color: Colors.textSecondary,
   },
 
   priorityButtonTextActive: {
@@ -502,24 +496,24 @@ const styles = StyleSheet.create({
   /* Manager */
 
   managerInput: {
-    height: Heights.inputLg,
+    height: Heights.inputs,
 
     flexDirection: 'row',
     alignItems: 'center',
 
-    paddingHorizontal: ms(15),
+    paddingHorizontal: Padding.lg,
 
     borderWidth: BorderWidth.thin,
-    borderColor: '#DCE4ED',
+    borderColor: Colors.border,
 
-    borderRadius: ms(27),
+    borderRadius: Radius['3xl'],
 
     backgroundColor: Colors.background,
   },
 
   managerAvatar: {
-    width: Heights.iconXl,
-    height: Heights.iconXl,
+    width: Heights.iconLg,
+    height: Heights.iconLg,
 
     borderRadius: Radius.full,
 
@@ -553,7 +547,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
 
-    gap: ms(9),
+    gap: Spacing.md,
   },
 
   memberChip: {

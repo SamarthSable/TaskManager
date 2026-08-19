@@ -6,7 +6,7 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Third-party imports
 import { vs } from 'react-native-size-matters';
-import { Heights, Padding } from '../../constants/globalStyle';
+import { Colors, Heights, Padding } from '../../constants/globalStyle';
 
 // Constants
 
@@ -20,7 +20,7 @@ const AppInput = ({
   leftIcon,
   onRightIconPress,
   inputStyle,
-  placeholderTextColor,
+
   ...props
 }) => {
   return (
@@ -38,7 +38,7 @@ const AppInput = ({
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor={placeholderTextColor}
+        placeholderTextColor={Colors.placeholder}
         value={value}
         onChangeText={onChangeText}
         keyboardType={keyboardType}

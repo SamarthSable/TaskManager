@@ -3,9 +3,12 @@ import {
   BorderWidth,
   Colors,
   FontSizes,
+  Heights,
   Margin,
   Padding,
   Radius,
+  Spacing,
+  Widths,
 } from '../../constants/globalStyle';
 import { ms, vs } from 'react-native-size-matters';
 import { fonts } from '../../constants/fonts';
@@ -96,7 +99,7 @@ export default function ProjectCard({
                 <Ionicons
                   name="checkbox-outline"
                   size={ms(12)}
-                  color="#7B8494"
+                  color={Colors.inactive}
                 />
 
                 <Text style={styles.infoText}>{taskCount}</Text>
@@ -117,8 +120,8 @@ export default function ProjectCard({
               <View style={styles.infoItem}>
                 <Ionicons
                   name="calendar-outline"
-                  size={ms(12)}
-                  color="#7B8494"
+                  size={Heights.icon}
+                  color={Colors.inactive}
                 />
 
                 <Text style={styles.infoText}>{dueDate}</Text>
@@ -188,8 +191,8 @@ const styles = StyleSheet.create({
   },
 
   projectIcon: {
-    width: ms(42),
-    height: ms(42),
+    width: Heights.iconXl,
+    height: Widths.iconXl,
 
     borderRadius: Radius.full,
 
@@ -210,7 +213,7 @@ const styles = StyleSheet.create({
 
     justifyContent: 'space-between',
 
-    marginBottom: vs(6),
+    marginBottom: Margin.xs,
   },
 
   titleContainer: {
@@ -227,15 +230,13 @@ const styles = StyleSheet.create({
 
   ownerText: {
     fontFamily: fonts.regular,
-    fontSize: ms(11),
+    fontSize: FontSizes.bodySm,
 
-    color: '#6D7788',
-
-    marginTop: vs(3),
+    color: Colors.inactive,
   },
 
   priorityBadge: {
-    paddingHorizontal: ms(11),
+    paddingHorizontal: Padding.md,
     paddingVertical: Padding.verticalXs,
 
     borderRadius: Radius.full,
@@ -251,9 +252,9 @@ const styles = StyleSheet.create({
 
     alignItems: 'center',
 
-    marginBottom: vs(9),
+    marginBottom: Margin.sm,
 
-    gap: ms(10),
+    gap: Spacing.md,
   },
 
   infoItem: {
@@ -268,13 +269,13 @@ const styles = StyleSheet.create({
     fontFamily: fonts.regular,
     fontSize: FontSizes.labelSm,
 
-    color: '#6D7788',
+    color: Colors.inactive,
   },
 
   statusBadge: {
     marginLeft: 'auto',
 
-    paddingHorizontal: ms(9),
+    paddingHorizontal: Padding.sm,
     paddingVertical: Padding.verticalXs,
 
     borderRadius: Radius.full,
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
 
   statusText: {
     fontFamily: fonts.semiBold,
-    fontSize: ms(9),
+    fontSize: FontSizes.labelSm,
   },
 
   progressRow: {
@@ -294,9 +295,9 @@ const styles = StyleSheet.create({
   progressBackground: {
     flex: 1,
 
-    height: vs(6),
+    height: Heights.progressBar,
 
-    backgroundColor: '#E3E8EF',
+    backgroundColor: Colors.border,
 
     borderRadius: Radius.full,
 
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
   },
 
   progressFill: {
-    height: '100%',
+    height: Heights.full,
 
     borderRadius: Radius.full,
   },
@@ -316,8 +317,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.labelSm,
 
     color: Colors.textPrimary,
-
-    width: ms(30),
 
     textAlign: 'right',
   },

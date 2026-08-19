@@ -1,31 +1,30 @@
 import React, { useState } from 'react';
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
-  Alert,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { ms, s, vs } from 'react-native-size-matters';
 
 import {
   Colors,
-  Spacing,
-  Padding,
-  Margin,
   FontSizes,
+  Padding,
   Radius,
   Heights,
   BorderWidth,
   Shadows,
   Widths,
+  Margin,
+  Spacing,
 } from '../../../constants/globalStyle';
 
 import AppInput from '../../../components/Common/AppInput';
@@ -34,7 +33,7 @@ import PrimaryButton from '../../../components/Common/PrimaryButton';
 import { Email, Icon, Google, Github, Lock } from '../../../assets/svgs';
 import { fonts } from '../../../constants/fonts';
 
-import { loginThunk } from '../../../redux/thunks/authThunks';
+import { loginUser } from '../../../services/authServices';
 import { signInWithGoogle } from '../../../services/googleAuthService';
 import { showSnackbar } from '../../../redux/slices/snackbarSlice';
 
@@ -42,17 +41,19 @@ export default function LoginScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const { loading, error } = useSelector(state => state.auth);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // Email / Password Login
+  /*
+   * EMAIL / PASSWORD LOGIN
+   */
+
   const handleLogin = async () => {
-    if (!email.trim()) {
-      console.log('Enter mail');
+    if (!email.trim() || !password) {
       dispatch(
         showSnackbar({
           message: 'Please enter email and password.',
@@ -62,35 +63,71 @@ export default function LoginScreen() {
       return;
     }
 
-    if (!password) {
-      console.log('Please enter your password');
+    if (loading || googleLoading) {
       return;
     }
 
     try {
-      const user = await dispatch(
-        loginThunk({
-          email: email.trim(),
-          password,
-        }),
-      ).unwrap();
+      setLoading(true);
+
+      await loginUser(email.trim(), password);
 
       dispatch(
         showSnackbar({
-          message: 'Login Succesfull.',
+          message: 'Login Successful.',
           type: 'success',
         }),
       );
-
-      navigation.replace('Stack');
     } catch (error) {
-      Alert.alert('Login failed:', error);
+      let message = 'Login failed. Please try again.';
+
+      switch (error?.code) {
+        case 'auth/invalid-email':
+          message = 'Please enter a valid email address.';
+          break;
+
+        case 'auth/user-not-found':
+          message = 'No account found with this email.';
+          break;
+
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          message = 'Invalid email or password.';
+          break;
+
+        case 'auth/user-disabled':
+          message = 'This account has been disabled.';
+          break;
+
+        case 'auth/too-many-requests':
+          message = 'Too many attempts. Please try again later.';
+          break;
+
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+          break;
+
+        default:
+          message = error?.message || message;
+      }
+
+      dispatch(
+        showSnackbar({
+          message,
+          type: 'error',
+        }),
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Google Login
+  /*
+   * GOOGLE LOGIN
+   */
+
   const handleGoogleLogin = async () => {
-    if (googleLoading) {
+    if (googleLoading || loading) {
       return;
     }
 
@@ -101,12 +138,17 @@ export default function LoginScreen() {
 
       dispatch(
         showSnackbar({
-          message: 'Login Succesfull.',
+          message: 'Login Successful.',
           type: 'success',
         }),
       );
     } catch (error) {
-      console.log('Google login failed:', error);
+      dispatch(
+        showSnackbar({
+          message: error?.message || 'Google login failed.',
+          type: 'error',
+        }),
+      );
     } finally {
       setGoogleLoading(false);
     }
@@ -120,6 +162,7 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
       >
         {/* Logo */}
+
         <LinearGradient
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -130,6 +173,7 @@ export default function LoginScreen() {
         </LinearGradient>
 
         {/* Header */}
+
         <View style={styles.header}>
           <Text style={styles.title}>Welcome back</Text>
 
@@ -137,8 +181,10 @@ export default function LoginScreen() {
         </View>
 
         {/* Form */}
+
         <View style={styles.formContainer}>
           {/* Email */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>EMAIL</Text>
 
@@ -149,12 +195,12 @@ export default function LoginScreen() {
               keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
-              placeholderTextColor="#98A3B3"
               leftIcon={<Email width={22} height={22} />}
             />
           </View>
 
           {/* Password */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>PASSWORD</Text>
 
@@ -163,7 +209,6 @@ export default function LoginScreen() {
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
-              placeholderTextColor={Colors.placeholder}
               leftIcon={<Lock width={22} height={22} />}
               rightIcon={
                 <Ionicons
@@ -177,6 +222,7 @@ export default function LoginScreen() {
           </View>
 
           {/* Forgot Password */}
+
           <TouchableOpacity
             style={styles.forgot}
             onPress={() => navigation.navigate('ForgotPass')}
@@ -184,12 +230,8 @@ export default function LoginScreen() {
             <Text style={styles.forgotText}>Forgot password?</Text>
           </TouchableOpacity>
 
-          {/* Error */}
-          {/* {error ? (
-            <Text style={styles.errorText}>{error}</Text>
-          ) : null} */}
-
           {/* Sign In */}
+
           <PrimaryButton
             title={loading ? 'Signing In...' : 'Sign In'}
             style={styles.button}
@@ -199,6 +241,7 @@ export default function LoginScreen() {
         </View>
 
         {/* Divider */}
+
         <View style={styles.divideContainer}>
           <View style={styles.dividerLine} />
 
@@ -208,8 +251,10 @@ export default function LoginScreen() {
         </View>
 
         {/* Social Login */}
+
         <View style={styles.socialContainer}>
           {/* Google */}
+
           <TouchableOpacity
             style={styles.socialButton}
             onPress={handleGoogleLogin}
@@ -223,6 +268,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           {/* Github */}
+
           <TouchableOpacity
             style={styles.socialButton}
             disabled={loading || googleLoading}
@@ -234,6 +280,7 @@ export default function LoginScreen() {
         </View>
 
         {/* Signup */}
+
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Don't have an account?</Text>
 
@@ -261,8 +308,8 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    width: s(64),
-    height: vs(64),
+    width: Widths.icon3xl,
+    height: Heights.icon3xl,
     borderRadius: Radius.xl,
     justifyContent: 'center',
     alignItems: 'center',
@@ -326,7 +373,7 @@ const styles = StyleSheet.create({
   },
 
   divideContainer: {
-    width: '100%',
+    width: Widths.full,
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: Margin.xl,
@@ -346,7 +393,7 @@ const styles = StyleSheet.create({
   },
 
   socialContainer: {
-    width: '100%',
+    width: Widths.full,
     flexDirection: 'row',
     gap: Spacing.md,
   },

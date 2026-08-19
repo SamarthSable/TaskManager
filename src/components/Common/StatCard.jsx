@@ -1,14 +1,13 @@
-/* ========
-   STAT CARD
-======== */
-
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   Colors,
   FontSizes,
+  Heights,
+  Margin,
   Padding,
   Radius,
+  Widths,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 import { ms, vs } from 'react-native-size-matters';
@@ -32,14 +31,14 @@ export default function StatCard({
             },
           ]}
         >
-          <Ionicons name={icon} size={ms(20)} color={iconColor} />
+          <Ionicons name={icon} size={ms(12)} color={iconColor} />
         </View>
 
         <Text
           style={[
             styles.changeText,
             {
-              color: positive ? '#16B866' : '#FF3B30',
+              color: positive ? Colors.success : Colors.danger,
             },
           ]}
         >
@@ -60,20 +59,20 @@ const styles = StyleSheet.create({
    */
 
   statCard: {
-    width: '48.3%',
+    width: '48%',
 
-    minHeight: vs(115),
+    minHeight: Heights.statCard,
 
     backgroundColor: Colors.surface,
 
     borderWidth: 1,
-    borderColor: '#E0E6EF',
+    borderColor: Colors.border,
 
-    borderRadius: ms(16),
+    borderRadius: Radius.xl,
 
-    padding: ms(17),
+    padding: Padding.lg,
 
-    marginBottom: ms(14),
+    marginBottom: Margin.sm,
   },
 
   statTop: {
@@ -85,8 +84,8 @@ const styles = StyleSheet.create({
   },
 
   statIcon: {
-    width: ms(40),
-    height: ms(40),
+    width: Widths.iconMd,
+    height: Heights.iconMd,
 
     borderRadius: Radius.full,
 
@@ -100,20 +99,16 @@ const styles = StyleSheet.create({
   },
 
   statValue: {
-    fontFamily: fonts.bold,
-    fontSize: ms(28),
-
+    fontFamily: fonts.extraBold,
+    fontSize: FontSizes.bodyLg,
     color: Colors.textPrimary,
-
-    marginTop: vs(12),
+    marginTop: Margin.md,
   },
 
   statLabel: {
     fontFamily: fonts.regular,
-    fontSize: FontSizes.bodySm,
+    fontSize: FontSizes.labelSm,
 
     color: Colors.textSecondary,
-
-    marginTop: vs(2),
   },
 });

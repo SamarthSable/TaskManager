@@ -2,36 +2,43 @@ import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
-  View,
-  ScrollView,
   TouchableOpacity,
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  View,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import { ms, vs } from 'react-native-size-matters';
 
-import AppInput from '../../../components/Common/AppInput';
-import PrimaryButton from '../../../components/Common/PrimaryButton';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ms } from 'react-native-size-matters';
+
 import Header from '../../../components/Common/Header';
-import { fonts } from '../../../constants/fonts';
+import PrimaryButton from '../../../components/Common/PrimaryButton';
+import AppInput from '../../../components/Common/AppInput';
+
 import {
   Colors,
   FontSizes,
-  Spacing,
-  Padding,
+  Heights,
+  LineHeights,
   Margin,
+  Padding,
   Radius,
-  BorderWidth,
+  Spacing,
   Widths,
 } from '../../../constants/globalStyle';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { signupThunk } from '../../../redux/thunks/authThunks';
-import { useDispatch, useSelector } from 'react-redux';
+
+import { fonts } from '../../../constants/fonts';
+
+import { signupUser } from '../../../services/authServices';
+import { showSnackbar } from '../../../redux/slices/snackbarSlice';
+
 export default function SignupScreen() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -46,9 +53,8 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-  const { loading, error } = useSelector(state => state.auth);
   const handleChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -56,7 +62,7 @@ export default function SignupScreen() {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const {
       firstName,
       lastName,
@@ -77,70 +83,118 @@ export default function SignupScreen() {
       !password ||
       !confirmPassword
     ) {
-      Alert.alert('Please fill all fields');
+      dispatch(
+        showSnackbar({
+          message: 'Please fill all fields.',
+          type: 'error',
+        }),
+      );
+
       return;
     }
 
     // Password match
     if (password !== confirmPassword) {
-      Alert.alert('Passwords do not match');
+      dispatch(
+        showSnackbar({
+          message: 'Passwords do not match.',
+          type: 'error',
+        }),
+      );
+
       return;
     }
 
     // Terms
     if (!agreed) {
-      Alert.alert('Please agree to Terms of Service and Privacy Policy');
+      dispatch(
+        showSnackbar({
+          message: 'Please agree to the Terms of Service and Privacy Policy.',
+          type: 'error',
+        }),
+      );
+
       return;
     }
 
-    // Data that will be sent to Firebase
     const signupData = {
       firstName: firstName.trim(),
       lastName: lastName.trim(),
-      email: email.trim(),
+      email: email.trim().toLowerCase(),
       phone: phone.trim(),
       company: company.trim(),
       password,
     };
 
-    console.log('Signup Data:', signupData);
+    try {
+      setLoading(true);
 
-    // Send data through Redux thunk
-    dispatch(signupThunk(signupData))
-      .unwrap()
-      .then(user => {
-        console.log('Signup successful:', user.uid);
+      await signupUser(signupData);
 
-        // Clear form only after successful signup
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          phone: '',
-          company: '',
-          password: '',
-          confirmPassword: '',
-        });
+      dispatch(
+        showSnackbar({
+          message: 'Account created successfully.',
+          type: 'success',
+        }),
+      );
 
-        // Reset checkbox
-        setAgreed(false);
-
-        // Navigate to Login
-        navigation.navigate('Login');
-      })
-      .catch(error => {
-        console.log('Signup failed:', error);
-
-        Alert.alert('Signup Failed', error);
+      // Clear form
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        company: '',
+        password: '',
+        confirmPassword: '',
       });
+
+      setAgreed(false);
+
+      // Go to Login
+      navigation.navigate('Login');
+    } catch (error) {
+      let message = 'Signup failed. Please try again.';
+
+      switch (error?.code) {
+        case 'auth/email-already-in-use':
+          message = 'An account already exists with this email.';
+          break;
+
+        case 'auth/invalid-email':
+          message = 'Please enter a valid email address.';
+          break;
+
+        case 'auth/weak-password':
+          message = 'Password is too weak.';
+          break;
+
+        case 'auth/network-request-failed':
+          message = 'Network error. Please check your internet connection.';
+          break;
+
+        default:
+          message = error?.message || message;
+      }
+
+      dispatch(
+        showSnackbar({
+          message,
+          type: 'error',
+        }),
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Create Account" />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
+        style={styles.keyboardContainer}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -148,6 +202,7 @@ export default function SignupScreen() {
           keyboardShouldPersistTaps="handled"
         >
           {/* Name */}
+
           <View style={styles.row}>
             <View style={styles.halfInput}>
               <Text style={styles.label}>FIRST NAME</Text>
@@ -156,6 +211,7 @@ export default function SignupScreen() {
                 placeholder="Alex"
                 value={formData.firstName}
                 onChangeText={text => handleChange('firstName', text)}
+                editable={!loading}
                 leftIcon={
                   <Ionicons
                     name="person-outline"
@@ -173,6 +229,7 @@ export default function SignupScreen() {
                 placeholder="Chen"
                 value={formData.lastName}
                 onChangeText={text => handleChange('lastName', text)}
+                editable={!loading}
                 leftIcon={
                   <Ionicons
                     name="person-outline"
@@ -185,6 +242,7 @@ export default function SignupScreen() {
           </View>
 
           {/* Email */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>EMAIL</Text>
 
@@ -194,6 +252,8 @@ export default function SignupScreen() {
               onChangeText={text => handleChange('email', text)}
               keyboardType="email-address"
               autoCapitalize="none"
+              autoCorrect={false}
+              editable={!loading}
               leftIcon={
                 <Ionicons
                   name="mail-outline"
@@ -205,6 +265,7 @@ export default function SignupScreen() {
           </View>
 
           {/* Phone */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>PHONE</Text>
 
@@ -213,6 +274,7 @@ export default function SignupScreen() {
               value={formData.phone}
               onChangeText={text => handleChange('phone', text)}
               keyboardType="phone-pad"
+              editable={!loading}
               leftIcon={
                 <Ionicons
                   name="call-outline"
@@ -224,6 +286,7 @@ export default function SignupScreen() {
           </View>
 
           {/* Company */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>COMPANY</Text>
 
@@ -231,6 +294,7 @@ export default function SignupScreen() {
               placeholder="Acme Corp"
               value={formData.company}
               onChangeText={text => handleChange('company', text)}
+              editable={!loading}
               leftIcon={
                 <Ionicons
                   name="business-outline"
@@ -242,6 +306,7 @@ export default function SignupScreen() {
           </View>
 
           {/* Password */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>PASSWORD</Text>
 
@@ -250,6 +315,7 @@ export default function SignupScreen() {
               value={formData.password}
               onChangeText={text => handleChange('password', text)}
               secureTextEntry={!showPassword}
+              editable={!loading}
               leftIcon={
                 <Ionicons
                   name="lock-closed-outline"
@@ -269,6 +335,7 @@ export default function SignupScreen() {
           </View>
 
           {/* Confirm Password */}
+
           <View style={styles.inputGroup}>
             <Text style={styles.label}>CONFIRM PASSWORD</Text>
 
@@ -277,6 +344,7 @@ export default function SignupScreen() {
               value={formData.confirmPassword}
               onChangeText={text => handleChange('confirmPassword', text)}
               secureTextEntry={!showConfirmPassword}
+              editable={!loading}
               leftIcon={
                 <Ionicons
                   name="lock-closed-outline"
@@ -296,9 +364,11 @@ export default function SignupScreen() {
           </View>
 
           {/* Terms */}
+
           <TouchableOpacity
             style={styles.termsContainer}
             activeOpacity={0.8}
+            disabled={loading}
             onPress={() => setAgreed(prev => !prev)}
           >
             <View style={[styles.checkbox, agreed && styles.checkboxChecked]}>
@@ -319,17 +389,23 @@ export default function SignupScreen() {
           </TouchableOpacity>
 
           {/* Create Account */}
+
           <PrimaryButton
-            title="Create Account"
+            title={loading ? 'Creating Account...' : 'Create Account'}
             style={styles.createButton}
             onPress={handleSubmit}
+            disabled={loading}
           />
 
           {/* Sign In */}
+
           <View style={styles.signInContainer}>
             <Text style={styles.signInText}>Already have an account?</Text>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity
+              disabled={loading}
+              onPress={() => navigation.navigate('Login')}
+            >
               <Text style={styles.signInLink}>Sign in</Text>
             </TouchableOpacity>
           </View>
@@ -338,35 +414,36 @@ export default function SignupScreen() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.surface,
   },
 
-  /* Content */
-
-  scrollContent: {
-    paddingHorizontal: Padding.lg,
-    paddingTop: Padding.lg,
-    paddingBottom: Padding['3xl'],
+  keyboardContainer: {
+    flex: 1,
   },
 
-  /* Two column row */
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: Padding['4xl'],
+  },
 
   row: {
     flexDirection: 'row',
     gap: Spacing.md,
+    paddingHorizontal: Padding.lg,
+    marginTop: Margin.lg,
   },
 
   halfInput: {
     flex: 1,
   },
 
-  /* Inputs */
-
   inputGroup: {
-    marginTop: Margin.sm,
+    paddingHorizontal: Padding.lg,
+    marginTop: Margin.md,
   },
 
   label: {
@@ -376,36 +453,21 @@ const styles = StyleSheet.create({
     paddingBottom: Padding.sm,
   },
 
-  /* Terms */
-
   termsContainer: {
-    minHeight: vs(50),
-
     flexDirection: 'row',
-    alignItems: 'center',
-
-    paddingHorizontal: Padding.md,
-    paddingVertical: Padding.sm,
-
-    marginTop: Margin.md,
-
-    backgroundColor: Colors.backgroundSecondary,
-
-    borderRadius: Radius.xl,
+    alignItems: 'flex-start',
+    paddingHorizontal: Padding.lg,
+    marginTop: Margin.lg,
   },
 
   checkbox: {
-    width: ms(20),
-    height: ms(20),
-
+    width: Widths.iconSm,
+    height: Heights.iconSm,
+    borderWidth: 1,
+    borderColor: Colors.textSecondary,
     borderRadius: Radius.xs,
-
-    borderWidth: BorderWidth.medium,
-    borderColor: Colors.primary,
-
     alignItems: 'center',
     justifyContent: 'center',
-
     marginRight: Margin.sm,
   },
 
@@ -416,12 +478,10 @@ const styles = StyleSheet.create({
 
   termsText: {
     flex: 1,
-
     fontFamily: fonts.regular,
     fontSize: FontSizes.bodySm,
-    lineHeight: ms(20),
-
     color: Colors.textSecondary,
+    lineHeight: LineHeights.labelLg,
   },
 
   termsLink: {
@@ -429,19 +489,15 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
 
-  /* Button */
-
   createButton: {
-    width: Widths.full,
+    marginHorizontal: Padding.lg,
+    marginTop: Margin.xl,
   },
-
-  /* Sign In */
 
   signInContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-
     marginTop: Margin.lg,
   },
 
@@ -455,7 +511,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.semiBold,
     fontSize: FontSizes.bodySm,
     color: Colors.primary,
-
     marginLeft: Margin.xs,
   },
 });

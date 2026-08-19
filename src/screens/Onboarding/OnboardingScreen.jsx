@@ -140,7 +140,11 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 16,
     backgroundColor: Colors.surface,
   },
-  skipContainer: { alignSelf: 'flex-end', paddingRight: Padding['2xl'] },
+  skipContainer: {
+    alignSelf: 'flex-end',
+    paddingRight: Padding['2xl'],
+    paddingTop: Padding.sm,
+  },
   page: {
     flex: 1,
     backgroundColor: Colors.surface,
@@ -159,7 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 30,
     fontWeight: '700',
-    color: '#182033',
+    color: Colors.black,
   },
 
   description: {
@@ -167,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 14,
     lineHeight: 21,
-    color: '#737B89',
+    color: Colors.textSecondary,
   },
 
   button: {
