@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -15,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ms, vs } from 'react-native-size-matters';
 import { useNavigation } from '@react-navigation/native';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Colors,
   FontSizes,
@@ -30,15 +31,18 @@ import { fonts } from '../../constants/fonts';
 import PrimaryButton from '../../components/Common/PrimaryButton';
 import AppInput from '../../components/Common/AppInput';
 import Header from '../../components/Common/Header';
+import TabSwitcher from '../../components/Common/TabSwitcher';
+import { showSnackbar } from '../../redux/slices/snackbarSlice';
+import { useDispatch } from 'react-redux';
 
 export default function NewProjectScreen() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const [projectName, setProjectName] = useState('');
   const [description, setDescription] = useState('');
 
-  const [startDate, setStartDate] = useState('Oct 01');
-  const [endDate, setEndDate] = useState('Dec 28');
+  // const [startDate, setStartDate] = useState('Oct 01');
+  // const [endDate, setEndDate] = useState('Dec 28');
 
   const [priority, setPriority] = useState('High');
   const [status, setStatus] = useState('');
@@ -50,73 +54,104 @@ export default function NewProjectScreen() {
   const statusOptions = ['Todo', 'In Progress', 'Review', 'Completed'];
 
   const managerOptions = ['Alex Chen', 'Sarah Kim', 'Mike Ross', 'Emma Davis'];
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+  const formatDate = date => {
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+    });
+  };
 
   const handleCreateProject = () => {
     if (!projectName.trim()) {
-      console.log('Please enter project name');
+      dispatch(
+        showSnackbar({
+          message: 'Please enter Project Name.',
+          type: 'warning',
+        }),
+      );
       return;
     }
 
     if (!status) {
-      console.log('Please select status');
+      dispatch(
+        showSnackbar({
+          message: 'Please select status',
+          type: 'warning',
+        }),
+      );
+
       return;
     }
 
     if (!manager) {
-      console.log('Please select project manager');
+      dispatch(
+        showSnackbar({
+          message: 'Please select project manager',
+          type: 'warning',
+        }),
+      );
+
       return;
     }
 
     const project = {
-      name: projectName.trim(),
+      id: `project-${Date.now()}`,
+
+      title: projectName.trim(),
       description: description.trim(),
-      startDate,
-      endDate,
+
+      owner: manager,
+
+      taskCount: 0,
+      memberCount: 0,
+
+      startDate: formatDate(startDate),
+      endDate: formatDate(endDate),
+      dueDate: formatDate(endDate),
+
+      progress: 0,
+
       priority,
       status,
-      manager,
-      members: [],
+
+      teamMembers: [],
     };
 
     console.log('New Project:', project);
 
-    // Later you can dispatch your createProjectThunk here.
+    dispatch(
+      showSnackbar({
+        message: 'Project Cretaed Successfully',
+        type: 'success',
+      }),
+    );
 
     navigation.goBack();
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         {/* Header */}
         <Header title={'New Project'} />
         <ScrollView
+          style={styles.scrollview}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.scrollContent}
+          nestedScrollEnabled={true}
         >
           {/* Project Name */}
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>PROJECT NAME</Text>
-
-            {/* <View style={styles.inputContainer}>
-              <Ionicons
-                name="briefcase-outline"
-                size={ms(17)}
-                color="#9AA4B5"
-              />
-
-              <TextInput
-                value={projectName}
-                onChangeText={setProjectName}
-                placeholder="Enter project name"
-                placeholderTextColor="#9AA4B5"
-                style={styles.input}
-              />
-            </View> */}
             <AppInput
               placeholder={'Enter Project name'}
               placeholderTextColor={'#9AA4B5'}
@@ -144,13 +179,17 @@ export default function NewProjectScreen() {
 
           {/* Dates */}
           <View style={styles.dateRow}>
+            {/* Start Date */}
             <View style={styles.dateField}>
               <Text style={styles.label}>START DATE</Text>
 
               <TouchableOpacity
                 style={styles.dateInput}
                 activeOpacity={0.7}
-                onPress={() => console.log('Open start date picker')}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setShowStartPicker(true);
+                }}
               >
                 <Ionicons
                   name="calendar-outline"
@@ -158,17 +197,21 @@ export default function NewProjectScreen() {
                   color="#9AA4B5"
                 />
 
-                <Text style={styles.dateText}>{startDate}</Text>
+                <Text style={styles.dateText}>{formatDate(startDate)}</Text>
               </TouchableOpacity>
             </View>
 
+            {/* End Date */}
             <View style={styles.dateField}>
               <Text style={styles.label}>END DATE</Text>
 
               <TouchableOpacity
                 style={styles.dateInput}
                 activeOpacity={0.7}
-                onPress={() => console.log('Open end date picker')}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setShowEndPicker(true);
+                }}
               >
                 <Ionicons
                   name="calendar-outline"
@@ -176,41 +219,59 @@ export default function NewProjectScreen() {
                   color="#9AA4B5"
                 />
 
-                <Text style={styles.dateText}>{endDate}</Text>
+                <Text style={styles.dateText}>{formatDate(endDate)}</Text>
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* Start Date Picker */}
+          {showStartPicker && (
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={(event, selectedDate) => {
+                setShowStartPicker(false);
+
+                if (selectedDate) {
+                  setStartDate(selectedDate);
+
+                  // Optional: prevent end date being before start date
+                  if (selectedDate > endDate) {
+                    setEndDate(selectedDate);
+                  }
+                }
+              }}
+            />
+          )}
+
+          {/* End Date Picker */}
+          {showEndPicker && (
+            <DateTimePicker
+              value={endDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              minimumDate={startDate}
+              onChange={(event, selectedDate) => {
+                setShowEndPicker(false);
+
+                if (selectedDate) {
+                  setEndDate(selectedDate);
+                }
+              }}
+            />
+          )}
 
           {/* Priority */}
           <View style={styles.fieldContainer}>
             <Text style={styles.label}>PRIORITY</Text>
 
-            <View style={styles.priorityRow}>
-              {['Low', 'Medium', 'High', 'Critical'].map(item => {
-                const selected = priority === item;
-
-                return (
-                  <TouchableOpacity
-                    key={item}
-                    activeOpacity={0.8}
-                    onPress={() => setPriority(item)}
-                    style={[
-                      styles.priorityButton,
-                      selected && styles.priorityButtonActive,
-                    ]}
-                  >
-                    <Text
-                      style={[
-                        styles.priorityText,
-                        selected && styles.priorityTextActive,
-                      ]}
-                    >
-                      {item}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+            <TabSwitcher
+              tabs={['Low', 'Medium', 'High', 'Critical']}
+              activeTab={priority}
+              onTabPress={setPriority}
+              variant="pill"
+            />
           </View>
 
           {/* Status */}
@@ -220,7 +281,10 @@ export default function NewProjectScreen() {
             <TouchableOpacity
               style={styles.selectInput}
               activeOpacity={0.7}
-              onPress={() => setShowStatusModal(true)}
+              onPress={() => {
+                Keyboard.dismiss();
+                setShowStatusModal(true);
+              }}
             >
               <Text
                 style={[styles.selectText, !status && styles.placeholderText]}
@@ -239,7 +303,10 @@ export default function NewProjectScreen() {
             <TouchableOpacity
               style={styles.selectInput}
               activeOpacity={0.7}
-              onPress={() => setShowManagerModal(true)}
+              onPress={() => {
+                Keyboard.dismiss();
+                setShowManagerModal(true);
+              }}
             >
               <Text
                 style={[styles.selectText, !manager && styles.placeholderText]}
@@ -271,7 +338,10 @@ export default function NewProjectScreen() {
           </View>
 
           {/* Create Button */}
-          <PrimaryButton title={'Create Project'} />
+          <PrimaryButton
+            title={'Create Project'}
+            onPress={() => handleCreateProject()}
+          />
         </ScrollView>
       </KeyboardAvoidingView>
 
@@ -357,7 +427,7 @@ export default function NewProjectScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
   },
 
   keyboardContainer: {
@@ -365,7 +435,9 @@ const styles = StyleSheet.create({
   },
 
   /* Scroll */
-
+  scrollview: {
+    flex: 1,
+  },
   scrollContent: {
     paddingHorizontal: Padding.lg,
     paddingTop: Padding.sm,
@@ -395,7 +467,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
     borderColor: Colors.border,
-
+    backgroundColor: Colors.background,
     borderRadius: Radius['3xl'],
   },
 
@@ -434,7 +506,7 @@ const styles = StyleSheet.create({
 
     borderWidth: 1,
     borderColor: Colors.border,
-
+    backgroundColor: Colors.background,
     borderRadius: Radius.full,
     gap: Spacing.sm,
   },
@@ -444,44 +516,6 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.bodySm,
 
     color: Colors.textSecondary,
-  },
-
-  /* Priority */
-
-  priorityRow: {
-    flexDirection: 'row',
-
-    justifyContent: 'space-between',
-
-    gap: Spacing.sm,
-  },
-
-  priorityButton: {
-    flex: 1,
-
-    height: Heights.inputSm,
-
-    alignItems: 'center',
-    justifyContent: 'center',
-
-    borderRadius: Radius.full,
-
-    backgroundColor: Colors.tabBg,
-  },
-
-  priorityButtonActive: {
-    backgroundColor: Colors.primary,
-  },
-
-  priorityText: {
-    fontFamily: fonts.semiBold,
-    fontSize: FontSizes.bodySm,
-
-    color: Colors.textSecondary,
-  },
-
-  priorityTextActive: {
-    color: Colors.surface,
   },
 
   /* Select */
@@ -494,7 +528,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
 
     paddingHorizontal: Padding.horizontalMd,
-
+    backgroundColor: Colors.background,
     borderWidth: 1,
     borderColor: Colors.border,
 

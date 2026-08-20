@@ -31,7 +31,7 @@ export default function StatCard({
             },
           ]}
         >
-          <Ionicons name={icon} size={ms(12)} color={iconColor} />
+          <Ionicons name={icon} size={ms(16)} color={iconColor} />
         </View>
 
         <Text

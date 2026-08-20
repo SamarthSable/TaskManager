@@ -14,7 +14,7 @@ import Profile from './icons/Profile.svg';
 import Team from './icons/Team.svg';
 import Task from './icons/Task.svg';
 import Folder from './icons/Folder.svg';
-
+import Edit from './icons/Edit.svg';
 export {
   Bg,
   Icon,
@@ -32,4 +32,5 @@ export {
   Team,
   Task,
   Folder,
+  Edit,
 };

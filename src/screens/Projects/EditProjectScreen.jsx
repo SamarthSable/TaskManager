@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import {
   Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +14,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ms, vs } from 'react-native-size-matters';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import {
   BorderWidth,
@@ -23,48 +28,66 @@ import {
   Spacing,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
+import Header from '../../components/Common/Header';
+import { showSnackbar } from '../../redux/slices/snackbarSlice';
+import { useDispatch } from 'react-redux';
 
-export default function EditProjectScreen({ navigation, route }) {
-  const project = route?.params?.project || {
-    title: 'Mobile App Redesign',
-    description: 'Complete redesign of the mobile application.',
-    startDate: 'Oct 01',
-    endDate: 'Dec 28',
-    priority: 'High',
-    manager: 'Alex Chen',
-    teamMembers: [
-      {
-        name: 'Alex',
-        initials: 'AC',
-        color: '#2563EB',
-      },
-      {
-        name: 'Sarah',
-        initials: 'SK',
-        color: '#7C3AED',
-      },
-      {
-        name: 'Mike',
-        initials: 'MR',
-        color: '#22C55E',
-      },
-      {
-        name: 'Emma',
-        initials: 'ED',
-        color: '#F59E0B',
-      },
-    ],
+export default function EditProjectScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const project = route?.params?.project;
+
+  // Date Helpers
+
+  const parseProjectDate = dateString => {
+    if (dateString instanceof Date) {
+      return dateString;
+    }
+
+    if (!dateString) {
+      return new Date();
+    }
+
+    const currentYear = new Date().getFullYear();
+
+    const parsedDate = new Date(`${dateString}, ${currentYear}`);
+
+    return isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
   };
 
-  const [projectName, setProjectName] = useState(project.title);
-  const [description, setDescription] = useState(project.description);
-  const [startDate, setStartDate] = useState(project.startDate);
-  const [endDate, setEndDate] = useState(project.endDate);
-  const [priority, setPriority] = useState(project.priority);
-  const [manager, setManager] = useState(project.manager);
-  const [teamMembers, setTeamMembers] = useState(project.teamMembers || []);
-  console.log(teamMembers);
+  const formatDate = date => {
+    if (!(date instanceof Date) || isNaN(date.getTime())) {
+      return '';
+    }
+
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+    });
+  };
+
+  // States
+
+  const [projectName, setProjectName] = useState(project?.title || '');
+
+  const [description, setDescription] = useState(project?.description || '');
+
+  const [startDate, setStartDate] = useState(new Date(project?.startDate));
+
+  const [endDate, setEndDate] = useState(new Date(project?.endDate));
+  const [priority, setPriority] = useState(project?.priority || 'Medium');
+
+  const [manager, setManager] = useState(project?.owner || '');
+
+  const [teamMembers, setTeamMembers] = useState(project?.teamMembers || []);
+
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
+
   const priorities = ['Low', 'Medium', 'High', 'Critical'];
+
+  // Team Members
 
   const handleRemoveMember = index => {
     setTeamMembers(prev =>
@@ -76,30 +99,78 @@ export default function EditProjectScreen({ navigation, route }) {
     console.log('Open member selection');
   };
 
+  // Date Pickers
+
+  const handleStartDateChange = (event, selectedDate) => {
+    setShowStartPicker(false);
+
+    if (!selectedDate) {
+      return;
+    }
+
+    setStartDate(selectedDate);
+
+    if (selectedDate > endDate) {
+      setEndDate(selectedDate);
+    }
+  };
+
+  const handleEndDateChange = (event, selectedDate) => {
+    setShowEndPicker(false);
+
+    if (!selectedDate) {
+      return;
+    }
+
+    setEndDate(selectedDate);
+  };
+
+  //
+  // Save
+  //
+
   const handleSave = () => {
     if (!projectName.trim()) {
-      Alert.alert('Validation', 'Please enter project name.');
+      dispatch(
+        showSnackbar({
+          message: 'Please enter project name.',
+          type: 'warning',
+        }),
+      );
       return;
     }
 
     const updatedProject = {
       ...project,
+
       title: projectName.trim(),
+
       description: description.trim(),
-      startDate,
-      endDate,
+
+      startDate: formatDate(startDate),
+
+      endDate: formatDate(endDate),
+
+      dueDate: formatDate(endDate),
+
       priority,
-      manager,
+
+      owner: manager,
+
       teamMembers,
     };
 
     console.log('Updated Project:', updatedProject);
-
-    // Later:
-    // updateProject(updatedProject)
-
+    dispatch(
+      showSnackbar({
+        message: 'Project Updated Successfully',
+        type: 'success',
+      }),
+    );
     navigation.goBack();
   };
+
+  // Delete
 
   const handleDelete = () => {
     Alert.alert(
@@ -115,6 +186,10 @@ export default function EditProjectScreen({ navigation, route }) {
           style: 'destructive',
           onPress: () => {
             console.log('Delete project:', project);
+
+            // Later:
+            // dispatch(deleteProject(project.id));
+
             navigation.goBack();
           },
         },
@@ -125,186 +200,252 @@ export default function EditProjectScreen({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={ms(22)}
-            color={Colors.textPrimary}
-          />
-        </TouchableOpacity>
-
-        <Text style={styles.headerTitle}>Edit Project</Text>
-
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Ionicons name="trash-outline" size={ms(20)} color="#FF4D5E" />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.content}
+      <KeyboardAvoidingView
+        style={styles.keyboardContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* Project Name */}
-        <Text style={styles.label}>PROJECT NAME</Text>
+        <Header
+          title="Edit Project"
+          backgroundColor={Colors.dangerLight}
+          rightIcon="trash-outline"
+          rightIconColor={Colors.danger}
+          onRightPress={handleDelete}
+        />
 
-        <View style={styles.inputContainer}>
-          <Ionicons name="briefcase-outline" size={ms(18)} color="#98A3B3" />
+        <ScrollView
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.content}
+        >
+          {/* Project Name */}
 
-          <TextInput
-            value={projectName}
-            onChangeText={setProjectName}
-            placeholder="Enter project name"
-            placeholderTextColor="#98A3B3"
-            style={styles.input}
-          />
-        </View>
+          <Text style={styles.label}>PROJECT NAME</Text>
 
-        {/* Description */}
-        <Text style={styles.label}>DESCRIPTION</Text>
+          <View style={styles.inputContainer}>
+            <Ionicons name="briefcase-outline" size={ms(18)} color="#98A3B3" />
 
-        <View style={styles.descriptionContainer}>
-          <TextInput
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            textAlignVertical="top"
-            style={styles.descriptionInput}
-          />
-        </View>
-
-        {/* Dates */}
-        <View style={styles.dateRow}>
-          <View style={styles.dateColumn}>
-            <Text style={styles.label}>START DATE</Text>
-
-            <TouchableOpacity style={styles.dateInput}>
-              <Ionicons name="calendar-outline" size={ms(17)} color="#98A3B3" />
-
-              <Text style={styles.dateText}>{startDate}</Text>
-            </TouchableOpacity>
+            <TextInput
+              value={projectName}
+              onChangeText={setProjectName}
+              placeholder="Enter project name"
+              placeholderTextColor={Colors.placeholder}
+              style={styles.input}
+            />
           </View>
 
-          <View style={styles.dateColumn}>
-            <Text style={styles.label}>END DATE</Text>
+          {/* Description */}
 
-            <TouchableOpacity style={styles.dateInput}>
-              <Ionicons name="calendar-outline" size={ms(17)} color="#98A3B3" />
+          <Text style={styles.label}>DESCRIPTION</Text>
 
-              <Text style={styles.dateText}>{endDate}</Text>
-            </TouchableOpacity>
+          <View style={styles.descriptionContainer}>
+            <TextInput
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              textAlignVertical="top"
+              placeholder="Enter project description"
+              placeholderTextColor="#98A3B3"
+              style={styles.descriptionInput}
+            />
           </View>
-        </View>
 
-        {/* Priority */}
-        <Text style={styles.label}>PRIORITY</Text>
+          {/* Dates */}
 
-        <View style={styles.priorityContainer}>
-          {priorities.map(item => {
-            const selected = priority === item;
+          <View style={styles.dateRow}>
+            {/* Start Date */}
 
-            return (
+            <View style={styles.dateField}>
+              <Text style={styles.label}>START DATE</Text>
+
               <TouchableOpacity
-                key={item}
-                style={[
-                  styles.priorityButton,
-                  selected && styles.priorityButtonActive,
-                ]}
-                onPress={() => setPriority(item)}
+                style={styles.dateInput}
+                activeOpacity={0.7}
+                onPress={() => setShowStartPicker(true)}
               >
-                <Text
-                  style={[
-                    styles.priorityButtonText,
-                    selected && styles.priorityButtonTextActive,
-                  ]}
-                >
-                  {item}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+                <Ionicons
+                  name="calendar-outline"
+                  size={ms(17)}
+                  color="#9AA4B5"
+                />
 
-        {/* Manager */}
-        <Text style={styles.label}>MANAGER</Text>
-
-        <TouchableOpacity style={styles.managerInput}>
-          <View style={styles.managerAvatar}>
-            <Text style={styles.managerAvatarText}>AC</Text>
-          </View>
-
-          <Text style={styles.managerText}>{project.owner}</Text>
-
-          <Ionicons name="chevron-down" size={ms(18)} color="#98A3B3" />
-        </TouchableOpacity>
-
-        {/* Team Members */}
-        <Text style={styles.label}>TEAM MEMBERS</Text>
-
-        <View style={styles.membersContainer}>
-          {teamMembers.map((member, index) => (
-            <View key={index} style={styles.memberChip}>
-              <View
-                style={[
-                  styles.memberAvatar,
-                  {
-                    backgroundColor: member.color,
-                  },
-                ]}
-              >
-                <Text style={styles.memberAvatarText}>{member.initials}</Text>
-              </View>
-
-              <Text style={styles.memberName}>{member.name}</Text>
-
-              <TouchableOpacity onPress={() => handleRemoveMember(index)}>
-                <Ionicons name="close" size={ms(15)} color="#A1AAB8" />
+                <Text style={styles.dateText}>{formatDate(startDate)}</Text>
               </TouchableOpacity>
             </View>
-          ))}
 
-          <TouchableOpacity
-            style={styles.addMemberButton}
-            onPress={handleAddMember}
-          >
-            <Ionicons
-              name="person-add-outline"
-              size={ms(16)}
-              color={Colors.primary}
+            {/* End Date */}
+
+            <View style={styles.dateField}>
+              <Text style={styles.label}>END DATE</Text>
+
+              <TouchableOpacity
+                style={styles.dateInput}
+                activeOpacity={0.7}
+                onPress={() => setShowEndPicker(true)}
+              >
+                <Ionicons
+                  name="calendar-outline"
+                  size={ms(17)}
+                  color="#9AA4B5"
+                />
+
+                <Text style={styles.dateText}>{formatDate(endDate)}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Start Date Picker */}
+
+          {showStartPicker && (
+            <DateTimePicker
+              value={startDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              onChange={handleStartDateChange}
             />
+          )}
 
-            <Text style={styles.addMemberText}>Add</Text>
-          </TouchableOpacity>
-        </View>
+          {/* End Date Picker */}
 
-        {/* Bottom Buttons */}
-        <View style={styles.bottomButtons}>
-          <TouchableOpacity
-            style={styles.cancelButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.cancelText}>Cancel</Text>
+          {showEndPicker && (
+            <DateTimePicker
+              value={endDate}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              minimumDate={startDate}
+              onChange={handleEndDateChange}
+            />
+          )}
+
+          {/* Priority */}
+
+          <Text style={styles.label}>PRIORITY</Text>
+
+          <View style={styles.priorityContainer}>
+            {priorities.map(item => {
+              const selected = priority === item;
+
+              return (
+                <TouchableOpacity
+                  key={item}
+                  style={[
+                    styles.priorityButton,
+                    selected && styles.priorityButtonActive,
+                  ]}
+                  onPress={() => setPriority(item)}
+                >
+                  <Text
+                    style={[
+                      styles.priorityButtonText,
+                      selected && styles.priorityButtonTextActive,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          {/* Manager */}
+
+          <Text style={styles.label}>MANAGER</Text>
+
+          <TouchableOpacity style={styles.managerInput} activeOpacity={0.7}>
+            <View style={styles.managerAvatar}>
+              <Text style={styles.managerAvatarText}>
+                {manager
+                  ? manager
+                      .split(' ')
+                      .map(name => name[0])
+                      .join('')
+                      .slice(0, 2)
+                      .toUpperCase()
+                  : 'AC'}
+              </Text>
+            </View>
+
+            <Text style={styles.managerText}>
+              {manager || 'Select manager'}
+            </Text>
+
+            <Ionicons name="chevron-down" size={ms(18)} color="#98A3B3" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-            <Text style={styles.saveText}>Save Changes</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+          {/* Team Members */}
+
+          <Text style={styles.label}>TEAM MEMBERS</Text>
+
+          <View style={styles.membersContainer}>
+            {teamMembers.map((member, index) => (
+              <View key={member.id || index} style={styles.memberChip}>
+                <View
+                  style={[
+                    styles.memberAvatar,
+                    {
+                      backgroundColor: member.color || Colors.primary,
+                    },
+                  ]}
+                >
+                  <Text style={styles.memberAvatarText}>{member.initials}</Text>
+                </View>
+
+                <Text style={styles.memberName}>{member.name}</Text>
+
+                <TouchableOpacity onPress={() => handleRemoveMember(index)}>
+                  <Ionicons name="close" size={ms(15)} color="#A1AAB8" />
+                </TouchableOpacity>
+              </View>
+            ))}
+
+            <TouchableOpacity
+              style={styles.addMemberButton}
+              onPress={handleAddMember}
+            >
+              <Ionicons
+                name="person-add-outline"
+                size={ms(16)}
+                color={Colors.primary}
+              />
+
+              <Text style={styles.addMemberText}>Add</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Bottom Buttons */}
+
+          <View style={styles.bottomButtons}>
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={() => {
+                handleSave();
+                Keyboard.dismiss();
+              }}
+            >
+              <Text style={styles.saveText}>Save Changes</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
   },
 
+  keyboardContainer: {
+    flex: 1,
+  },
   /* Header */
 
   header: {
@@ -579,7 +720,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bold,
     fontSize: FontSizes.labelSm,
 
-    color: Colors.surface,
+    color: Colors.white,
   },
 
   memberName: {

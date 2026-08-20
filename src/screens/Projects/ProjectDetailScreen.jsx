@@ -9,7 +9,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ms, vs } from 'react-native-size-matters';
+import { Edit } from '../../assets/svgs';
+
 import TaskCard from '../../components/Task/TaskCard';
+import Header from '../../components/Common/Header';
+import TabSwitcher from '../../components/Common/TabSwitcher';
+import tasks from '../../data/tasks';
 import {
   Colors,
   FontSizes,
@@ -17,94 +22,47 @@ import {
   Margin,
   Padding,
   Radius,
+  Spacing,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
-import Header from '../../components/Common/Header';
-
-export default function ProjectDetailScreen({ navigation, route }) {
-  const [activeTab, setActiveTab] = useState('Tasks');
-
-  const project = route?.params?.project || {
-    title: 'Mobile App Redesign',
-    owner: 'Alex Chen',
-    progress: 68,
-    priority: 'High',
-    priorityColor: '#FEF3C7',
-    priorityTextColor: '#92400E',
-    taskCount: 34,
-    memberCount: 6,
-    startDate: 'Oct 01',
-    endDate: 'Dec 28',
-  };
-
-  const tasks = [
-    {
-      title: 'Design system component library',
-      owner: 'Alex Chen',
-      status: 'In Progress',
-      statusColor: '#E5EDFF',
-      statusTextColor: '#2260FF',
-      dotColor: '#F59E0B',
-    },
-    {
-      title: 'User authentication flow',
-      owner: 'Emma Davis',
-      status: 'Completed',
-      statusColor: '#D9FBE7',
-      statusTextColor: '#16803C',
-      dotColor: '#F59E0B',
-    },
-    {
-      title: 'Push notification service',
-      owner: 'Alex Chen',
-      status: 'Backlog',
-      statusColor: '#F4F6F8',
-      statusTextColor: '#64748B',
-      dotColor: '#2563EB',
-    },
-    {
-      title: 'Dark mode implementation',
-      owner: 'Mike Ross',
-      status: 'Testing',
-      statusColor: '#F0E2FF',
-      statusTextColor: '#7C3AED',
-      dotColor: '#22C55E',
-    },
-  ];
+import TeamMemberCard from '../../components/Common/TeamMemberCard';
+import { useNavigation, useRoute } from '@react-navigation/native';
+export default function ProjectDetailScreen() {
+  const navigation = useNavigation();
+  const route = useRoute();
+  const project = route?.params?.project;
 
   const tabs = ['Tasks', 'Team', 'Files', 'Activity'];
+  const [activeTab, setActiveTab] = useState('Tasks');
+  const formatDate = date => {
+    if (!date) {
+      return '';
+    }
+
+    const parsedDate = new Date(date);
+
+    if (isNaN(parsedDate.getTime())) {
+      return '';
+    }
+
+    return parsedDate.toLocaleDateString('en-US', {
+      month: 'short',
+      day: '2-digit',
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
-      <View style={styles.header}>
-        {/* <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons
-            name="arrow-back"
-            size={ms(21)}
-            color={Colors.textPrimary}
-          />
-        </TouchableOpacity> */}
-        <Header title={''} />
-
-        <TouchableOpacity
-          style={styles.headerButton}
-          onPress={() =>
-            navigation.navigate('EditProject', {
-              project,
-            })
-          }
-        >
-          <Ionicons
-            name="create-outline"
-            size={ms(21)}
-            color={Colors.textPrimary}
-          />
-        </TouchableOpacity>
-      </View>
+      <Header
+        title=""
+        rightIconComponent={Edit}
+        onRightPress={() =>
+          navigation.navigate('EditProject', {
+            project,
+          })
+        }
+      />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -154,6 +112,7 @@ export default function ProjectDetailScreen({ navigation, route }) {
         {/* Progress */}
         <View style={styles.progressHeader}>
           <Text style={styles.progressLabel}>Progress</Text>
+
           <Text style={styles.progressValue}>{project.progress}%</Text>
         </View>
 
@@ -184,44 +143,31 @@ export default function ProjectDetailScreen({ navigation, route }) {
 
           <StatCard
             icon="calendar-outline"
-            value={project.startDate || 'Aug 18'}
+            value={project.startDate ? formatDate(project.startDate) : 'Aug 18'}
             label="Start"
           />
 
           <StatCard
             icon="flag-outline"
-            value={project.endDate || 'Dec 13'}
+            value={project.endDate ? formatDate(project.endDate) : 'Dec 13'}
             label="End"
           />
         </View>
 
         {/* Tabs */}
-        <View style={styles.tabsContainer}>
-          {tabs.map(tab => (
-            <TouchableOpacity
-              key={tab}
-              style={styles.tab}
-              onPress={() => setActiveTab(tab)}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  activeTab === tab && styles.activeTabText,
-                ]}
-              >
-                {tab}
-              </Text>
-
-              {activeTab === tab && <View style={styles.activeTabLine} />}
-            </TouchableOpacity>
-          ))}
-        </View>
+        <TabSwitcher
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabPress={setActiveTab}
+          variant="underline"
+        />
 
         {/* Tab Content */}
+
         {activeTab === 'Tasks' && (
           <View style={styles.tasksContainer}>
             {/* Add Task */}
-            <TouchableOpacity style={styles.addTaskButton}>
+            <TouchableOpacity style={styles.addTaskButton} activeOpacity={0.8}>
               <Ionicons name="add" size={ms(18)} color={Colors.primary} />
 
               <Text style={styles.addTaskText}>Add Task</Text>
@@ -233,17 +179,24 @@ export default function ProjectDetailScreen({ navigation, route }) {
             ))}
           </View>
         )}
+        {activeTab === 'Team' &&
+          (project.teamMembers?.length > 0 ? (
+            <View style={styles.teamContainer}>
+              {project.teamMembers.map(member => (
+                <TeamMemberCard key={member.id} member={member} />
+              ))}
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="people-outline"
+                size={ms(35)}
+                color={Colors.textSecondary}
+              />
 
-        {activeTab === 'Team' && (
-          <View style={styles.emptyContainer}>
-            <Ionicons
-              name="people-outline"
-              size={ms(35)}
-              color={Colors.textSecondary}
-            />
-            <Text style={styles.emptyText}>Team members</Text>
-          </View>
-        )}
+              <Text style={styles.emptyText}>Team members</Text>
+            </View>
+          ))}
 
         {activeTab === 'Files' && (
           <View style={styles.emptyContainer}>
@@ -252,6 +205,7 @@ export default function ProjectDetailScreen({ navigation, route }) {
               size={ms(35)}
               color={Colors.textSecondary}
             />
+
             <Text style={styles.emptyText}>Project files</Text>
           </View>
         )}
@@ -263,6 +217,7 @@ export default function ProjectDetailScreen({ navigation, route }) {
               size={ms(35)}
               color={Colors.textSecondary}
             />
+
             <Text style={styles.emptyText}>Project activity</Text>
           </View>
         )}
@@ -454,7 +409,7 @@ const styles = StyleSheet.create({
 
     height: Heights.buttonLg,
 
-    borderRadius: ms(18),
+    borderRadius: Radius.xl,
 
     backgroundColor: '#F1F4F8',
 
@@ -530,11 +485,11 @@ const styles = StyleSheet.create({
 
   tasksContainer: {
     paddingHorizontal: Padding.lg,
-    paddingTop: vs(15),
+    paddingTop: Padding.md,
   },
 
   addTaskButton: {
-    height: Heights.buttonSm,
+    height: Heights.inputSm,
 
     borderWidth: 1,
     borderStyle: 'dashed',
@@ -560,7 +515,11 @@ const styles = StyleSheet.create({
   },
 
   /* Other tabs */
-
+  teamContainer: {
+    gap: 12,
+    paddingHorizontal: Padding.horizontalLg,
+    paddingTop: Padding.lg,
+  },
   emptyContainer: {
     alignItems: 'center',
     justifyContent: 'center',

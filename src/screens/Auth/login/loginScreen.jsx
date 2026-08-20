@@ -296,7 +296,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
   },
 
   scrollContent: {
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     borderRadius: Radius.lg,
     gap: Spacing.sm,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
   },
 
   socialText: {

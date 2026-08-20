@@ -1,7 +1,12 @@
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { View, Text } from 'react-native';
 import { ms, vs } from 'react-native-size-matters';
-import { Colors, FontSizes, Radius } from '../../constants/globalStyle';
+import {
+  Colors,
+  FontSizes,
+  Heights,
+  Radius,
+} from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 
 export default function TaskCard({ task }) {
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
   /* Task Card */
 
   taskCard: {
-    minHeight: vs(70),
+    minHeight: Heights.button,
 
     borderWidth: 1,
     borderColor: '#DEE5EE',

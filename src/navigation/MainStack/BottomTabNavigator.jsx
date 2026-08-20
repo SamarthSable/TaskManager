@@ -5,6 +5,8 @@ import { Home, Profile, Team, Task, Folder } from '../../assets/svgs';
 import HomeScreen from '../../screens/Home/HomeScreen';
 import ProjectScreen from '../../screens/Projects/Projects';
 import ProfileScreen from '../../screens/Profile/ProfileScreen';
+import TeamScreen from '../../screens/Team/TeamScreen';
+import TaskScreen from '../../screens/Tasks/TaskScreen';
 import { Colors, Padding } from '../../constants/globalStyle';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 const Tab = createBottomTabNavigator();
@@ -54,7 +56,7 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="Task"
-        component={HomeScreen}
+        component={TaskScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Task
@@ -68,7 +70,7 @@ export default function BottomTabNavigator() {
 
       <Tab.Screen
         name="Team"
-        component={HomeScreen}
+        component={TeamScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Team

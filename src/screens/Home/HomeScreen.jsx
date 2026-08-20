@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  FlatList,
   ScrollView,
   StyleSheet,
   Text,
@@ -13,7 +14,7 @@ import Svg, { Defs, LinearGradient, Path, Stop, Line } from 'react-native-svg';
 
 import StatCard from '../../components/Common/StatCard';
 import ProjectCard from '../../components/Common/ProjectCard';
-
+import projects from '../../data/projects';
 import {
   Colors,
   FontSizes,
@@ -30,8 +31,12 @@ import { fonts } from '../../constants/fonts';
 import { getAuth } from '@react-native-firebase/auth';
 import { getUserProfile } from '../../services/authServices';
 import { useNavigation } from '@react-navigation/native';
+import { showSnackbar } from '../../redux/slices/snackbarSlice';
+import { useDispatch } from 'react-redux';
 
 export default function HomeScreen() {
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
   const [profile, setProfile] = useState(null);
 
@@ -59,54 +64,61 @@ export default function HomeScreen() {
     profile?.firstName || currentUser?.displayName?.split(' ')[0] || 'User';
 
   const lastName = profile?.lastName || '';
+  useEffect(() => {
+    dispatch(
+      showSnackbar({
+        message: `Welcome Back ${firstName} ${lastName}`.trim(),
+        type: 'success',
+      }),
+    );
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* HEADER */}
+
+      <View style={styles.header}>
+        <View style={styles.profileSection}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>
+              {firstName?.[0]?.toUpperCase() || 'U'}
+              {lastName?.[0]?.toUpperCase() || ''}
+            </Text>
+          </View>
+
+          <View>
+            <Text style={styles.greeting}>Good morning 👋</Text>
+
+            <Text style={styles.userName}>
+              {`${firstName} ${lastName}`.trim()}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.headerActions}>
+          <TouchableOpacity style={styles.headerButton}>
+            <Ionicons
+              name="search-outline"
+              size={ms(22)}
+              color={Colors.textPrimary}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.headerButton}>
+            <Ionicons
+              name="notifications-outline"
+              size={ms(22)}
+              color={Colors.textPrimary}
+            />
+
+            <View style={styles.notificationDot} />
+          </TouchableOpacity>
+        </View>
+      </View>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* HEADER */}
-
-        <View style={styles.header}>
-          <View style={styles.profileSection}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {firstName?.[0]?.toUpperCase() || 'U'}
-                {lastName?.[0]?.toUpperCase() || ''}
-              </Text>
-            </View>
-
-            <View>
-              <Text style={styles.greeting}>Good morning 👋</Text>
-
-              <Text style={styles.userName}>
-                {`${firstName} ${lastName}`.trim()}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.headerButton}>
-              <Ionicons
-                name="search-outline"
-                size={ms(22)}
-                color={Colors.textPrimary}
-              />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.headerButton}>
-              <Ionicons
-                name="notifications-outline"
-                size={ms(22)}
-                color={Colors.textPrimary}
-              />
-
-              <View style={styles.notificationDot} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
         {/* STAT CARDS */}
 
         <View style={styles.statsGrid}>
@@ -167,41 +179,36 @@ export default function HomeScreen() {
             <Text style={styles.seeAll}>See All</Text>
           </TouchableOpacity>
         </View>
-        <View style={{ paddingHorizontal: ms(12) }}>
-          <ProjectCard
-            varient="Home"
-            icon="folder-outline"
-            title="Mobile App Redesign"
-            progress="68%"
-            progressWidth="68%"
-            priority="High"
-            priorityColor={Colors.warningLight}
-            priorityTextColor={Colors.warningDark}
-          />
 
-          <ProjectCard
-            varient="Home"
-            icon="folder-outline"
-            title="Api Integration v3"
-            progress="45%"
-            progressWidth="45%"
-            priority="Critical"
-            priorityColor={Colors.dangerLight}
-            priorityTextColor={Colors.dangerDark}
-          />
+        <FlatList
+          data={projects.slice(0, 3)}
+          keyExtractor={item => item.id}
+          scrollEnabled={false}
+          contentContainerStyle={styles.projectsList}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              activeOpacity={0.9}
+              onPress={() =>
+                navigation.navigate('ProjectDetail', {
+                  project: item,
+                })
+              }
+            >
+              <ProjectCard project={item} varient="Home" />
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Ionicons
+                name="folder-open-outline"
+                size={ms(40)}
+                color={Colors.placeholder}
+              />
 
-          <ProjectCard
-            varient="Home"
-            icon="folder-outline"
-            title="Dashboard Analytics"
-            progress="45%"
-            progressWidth="45%"
-            priority="Medium"
-            priorityColor={Colors.mediumLight}
-            priorityTextColor={Colors.mediumDark}
-          />
-        </View>
-        <View style={{ height: vs(30) }} />
+              <Text style={styles.emptyText}>No projects found</Text>
+            </View>
+          }
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -366,6 +373,7 @@ const styles = StyleSheet.create({
 
   scrollContent: {
     paddingBottom: Padding.xl,
+    paddingHorizontal: Padding.md,
   },
 
   /*
@@ -469,7 +477,6 @@ const styles = StyleSheet.create({
 
     justifyContent: 'space-between',
 
-    paddingHorizontal: Padding.lg,
     paddingTop: Padding.lg,
   },
 
@@ -478,7 +485,7 @@ const styles = StyleSheet.create({
    */
 
   progressCard: {
-    marginHorizontal: Padding.lg,
+    // marginHorizontal: Padding.lg,
 
     backgroundColor: Colors.surface,
 
@@ -554,5 +561,14 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.bodySm,
 
     color: Colors.primary,
+  },
+  projectsList: {
+    paddingBottom: Padding['5xl'],
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: Padding['5xl'],
   },
 });

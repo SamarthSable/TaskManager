@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Animated, Platform, StyleSheet, Text } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import { Colors, FontSizes } from '../../constants/globalStyle';
@@ -9,7 +9,7 @@ export default function CustomSnackBar({
   visible,
   message,
   type = 'success',
-  duration = 3000,
+  duration = 2000,
   onDismiss,
 }) {
   const translateX = useRef(new Animated.Value(300)).current;
@@ -114,7 +114,7 @@ export default function CustomSnackBar({
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 30,
+    bottom: 50,
     alignSelf: 'center',
     width: '90%',
     backgroundColor: Colors.surface,

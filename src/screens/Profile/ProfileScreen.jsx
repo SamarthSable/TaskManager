@@ -1,12 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { logoutUser } from '../../services/authServices';
+import { showSnackbar } from '../../redux/slices/snackbarSlice';
+import { useDispatch } from 'react-redux';
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
       await logoutUser();
@@ -14,6 +16,12 @@ export default function ProfileScreen() {
       // Firebase auth listener in RootNavigator
       // will automatically detect logout and show AuthStack.
       // navigation.navigate('Login');
+      dispatch(
+        showSnackbar({
+          message: 'Logout Successful.',
+          type: 'success',
+        }),
+      );
     } catch (error) {
       console.log('Logout error:', error);
     }

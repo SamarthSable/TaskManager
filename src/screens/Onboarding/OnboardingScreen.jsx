@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // paddingHorizontal: 16,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
   },
   skipContainer: {
     alignSelf: 'flex-end',
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   page: {
     flex: 1,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
   },
 
   content: {

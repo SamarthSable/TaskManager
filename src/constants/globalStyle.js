@@ -287,6 +287,7 @@ export const Heights = {
 
   // ProgressHeight
   progressBar: vs(6),
+  tabLineHeight: vs(2),
 };
 
 /* 

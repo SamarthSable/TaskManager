@@ -14,31 +14,32 @@ import { ms, vs } from 'react-native-size-matters';
 import { fonts } from '../../constants/fonts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-export default function ProjectCard({
-  icon = 'folder-outline',
-  iconColor = Colors.primary,
-  title,
-  owner = 'Alex Chen',
+export default function ProjectCard({ project, varient }) {
+  const {
+    icon = 'folder-outline',
+    iconColor = Colors.primary,
+    title,
+    owner = 'Alex Chen',
 
-  taskCount,
-  teamCount,
-  dueDate,
+    taskCount,
+    memberCount,
+    dueDate,
 
-  progress,
-  progressWidth,
+    progress = 0,
 
-  priority,
-  priorityColor,
-  priorityTextColor,
+    priority,
+    priorityColor,
+    priorityTextColor,
 
-  status,
-  statusColor,
-  statusTextColor,
+    status,
+    statusColor,
+    statusTextColor,
 
-  progressColor = Colors.primary,
+    progressColor = Colors.primary,
+  } = project || {};
 
-  varient,
-}) {
+  const progressValue = `${progress}%`;
+
   return (
     <View style={styles.projectCard}>
       <View style={styles.projectContent}>
@@ -55,6 +56,7 @@ export default function ProjectCard({
           >
             <Ionicons name={icon} size={ms(21)} color={iconColor} />
           </View>
+
           <View style={styles.titleContainer}>
             <Text style={styles.projectTitle} numberOfLines={1}>
               {title}
@@ -107,11 +109,11 @@ export default function ProjectCard({
             )}
 
             {/* Team */}
-            {teamCount !== undefined && (
+            {memberCount !== undefined && (
               <View style={styles.infoItem}>
                 <Ionicons name="people-outline" size={ms(13)} color="#7B8494" />
 
-                <Text style={styles.infoText}>{teamCount}</Text>
+                <Text style={styles.infoText}>{memberCount}</Text>
               </View>
             )}
 
@@ -160,14 +162,14 @@ export default function ProjectCard({
               style={[
                 styles.progressFill,
                 {
-                  width: progressWidth,
+                  width: progressValue,
                   backgroundColor: progressColor,
                 },
               ]}
             />
           </View>
 
-          <Text style={styles.progressText}>{progress}</Text>
+          <Text style={styles.progressText}>{progressValue}</Text>
         </View>
       </View>
     </View>
