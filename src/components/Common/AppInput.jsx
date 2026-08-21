@@ -6,7 +6,13 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Third-party imports
 import { vs } from 'react-native-size-matters';
-import { Colors, Heights, Padding } from '../../constants/globalStyle';
+import {
+  Colors,
+  FontSizes,
+  Heights,
+  Padding,
+  Radius,
+} from '../../constants/globalStyle';
 
 // Constants
 
@@ -65,25 +71,23 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
 
-    backgroundColor: '#F8FAFC',
-    borderRadius: 18,
+    backgroundColor: Colors.background,
+    borderRadius: Radius.xl,
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#E2E8F0',
+    borderColor: Colors.border,
     paddingHorizontal: Padding.md,
     borderWidth: 1,
   },
 
   input: {
     flex: 1,
-    height: Heights.inputSm,
-    paddingHorizontal: 12,
-    backgroundColor: '#F8FAFC',
-
-    // borderColor: '#E2E8F0',
-    borderRadius: 8,
-    fontSize: 14,
-    color: '#111827',
+    // height: Heights.inputSm,
+    paddingHorizontal: Padding.horizontalMd,
+    backgroundColor: Colors.background,
+    borderRadius: Radius.md,
+    fontSize: FontSizes.bodyMd,
+    color: Colors.black,
   },
 
   iconContainer: {

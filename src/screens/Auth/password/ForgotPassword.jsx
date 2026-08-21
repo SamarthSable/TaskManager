@@ -321,8 +321,11 @@ import { useDispatch } from 'react-redux';
 import {
   Colors,
   FontSizes,
+  Heights,
+  LineHeights,
   Margin,
   Padding,
+  Widths,
 } from '../../../constants/globalStyle';
 
 import { ForgotPass } from '../../../assets/svgs';
@@ -547,8 +550,8 @@ const styles = StyleSheet.create({
    */
 
   imageContainer: {
-    width: ms(140),
-    height: ms(140),
+    width: Widths.imgContainer,
+    height: Heights.imgContainer,
 
     alignItems: 'center',
     justifyContent: 'center',
@@ -576,7 +579,7 @@ const styles = StyleSheet.create({
 
     fontFamily: fonts.regular,
     fontSize: FontSizes.bodyMd,
-    lineHeight: ms(21),
+    lineHeight: LineHeights.labelLg,
 
     color: Colors.textSecondary,
 

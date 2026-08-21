@@ -8,8 +8,11 @@ import {
   BorderWidth,
   Colors,
   FontSizes,
+  Heights,
+  Margin,
   Padding,
   Radius,
+  Widths,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 
@@ -61,7 +64,7 @@ export default function Header({
 
 const styles = StyleSheet.create({
   header: {
-    height: vs(48),
+    height: Heights.headerH,
 
     flexDirection: 'row',
     alignItems: 'center',
@@ -74,8 +77,8 @@ const styles = StyleSheet.create({
   },
 
   backButton: {
-    width: ms(40),
-    height: ms(40),
+    width: Widths.iconXl,
+    height: Heights.iconXl,
 
     borderRadius: Radius.full,
 
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
 
     textAlign: 'center',
 
-    marginHorizontal: ms(10),
+    marginHorizontal: Margin.horizontalSm,
 
     fontFamily: fonts.semiBold,
     fontSize: FontSizes.h2,
@@ -99,8 +102,8 @@ const styles = StyleSheet.create({
   },
 
   rightButton: {
-    width: ms(40),
-    height: ms(40),
+    width: Widths.iconXl,
+    height: Heights.iconXl,
 
     borderRadius: Radius.full,
     backgroundColor: Colors.tabBg,
@@ -109,7 +112,7 @@ const styles = StyleSheet.create({
   },
 
   headerSpacer: {
-    width: ms(40),
-    height: ms(40),
+    width: Widths.iconXl,
+    height: Heights.iconXl,
   },
 });

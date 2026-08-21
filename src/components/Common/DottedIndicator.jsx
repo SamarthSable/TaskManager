@@ -1,5 +1,12 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import {
+  Colors,
+  Heights,
+  Margin,
+  Radius,
+  Widths,
+} from '../../constants/globalStyle';
 
 export default function DottedIndicator({ total, activeIndex }) {
   return (
@@ -22,15 +29,15 @@ const styles = StyleSheet.create({
   },
 
   dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#C7D2E3',
-    marginHorizontal: 3,
+    width: Widths.xxs,
+    height: Heights.xxs,
+    borderRadius: Radius.xs,
+    backgroundColor: Colors.background,
+    marginHorizontal: Margin.horizontalXs,
   },
 
   activeDot: {
-    width: 20,
-    backgroundColor: '#2260FF',
+    width: Widths.iconSm,
+    backgroundColor: Colors.primary,
   },
 });

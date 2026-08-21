@@ -8,12 +8,14 @@ import {
   ScrollView,
   FlatList,
   KeyboardAvoidingView,
+  Keyboard,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ms, vs } from 'react-native-size-matters';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
+import EmptyStateCard from '../../components/Common/EmptyStateCard';
 import ProjectCard from '../../components/Common/ProjectCard';
 import TabSwitcher from '../../components/Common/TabSwitcher';
 import projects from '../../data/projects';
@@ -23,7 +25,6 @@ import {
   Heights,
   Padding,
   Radius,
-  Spacing,
 } from '../../constants/globalStyle';
 import { fonts } from '../../constants/fonts';
 
@@ -102,10 +103,6 @@ export default function Projects() {
           onTabPress={setSelectedFilter}
           variant="pill"
         />
-        {/* <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      > */}
         {/* Projects */}
 
         <FlatList
@@ -127,18 +124,27 @@ export default function Projects() {
             </TouchableOpacity>
           )}
           ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons
-                name="folder-open-outline"
-                size={ms(40)}
-                color={Colors.placeholder}
-              />
+            // <View style={styles.emptyContainer}>
+            //   <Ionicons
+            //     name="folder-open-outline"
+            //     size={ms(40)}
+            //     color={Colors.placeholder}
+            //   />
 
-              <Text style={styles.emptyText}>No projects found</Text>
-            </View>
+            //   <Text style={styles.emptyText}>No projects found</Text>
+            // </View>
+            <EmptyStateCard
+              icon="folder-outline"
+              iconColor={Colors.primary}
+              iconBackgroundColor={Colors.projectBg}
+              title="No Projects Yet"
+              description="Create your first project to start managing work."
+              buttonText="Create Project"
+              buttonColor={Colors.primary}
+              onPress={() => navigation.navigate('NewProject')}
+            />
           }
         />
-        {/* </ScrollView> */}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -155,11 +161,8 @@ const styles = StyleSheet.create({
   keyboardContainer: {
     flex: 1,
   },
-  // scrollContent: {
-  //   paddingHorizontal: Padding.md,
-  //   paddingBottom: Padding['3xl'],
-  // },
-  projectlist: { flex: 1 },
+
+  projectlist: { flex: 1, paddingTop: Padding['2xl'] },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -191,7 +194,7 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    height: Heights.inputSm,
+    // height: Heights.inputSm,
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: Radius.full,
@@ -206,36 +209,8 @@ const styles = StyleSheet.create({
     fontSize: FontSizes.body,
   },
 
-  filters: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Padding.verticalSm,
-    gap: Spacing.md,
-  },
-
-  filterButton: {
-    paddingHorizontal: Padding.horizontalLg,
-    paddingVertical: Padding.verticalXs,
-
-    borderRadius: Radius.full,
-    backgroundColor: Colors.tabBg,
-  },
-
-  filterButtonActive: {
-    backgroundColor: Colors.active,
-  },
-
-  filterText: {
-    fontFamily: fonts.semiBold,
-    fontSize: FontSizes.caption,
-    color: Colors.textSecondary,
-  },
-
-  filterTextActive: {
-    color: Colors.white,
-  },
-
   projectsContainer: {
+    flexGrow: 1,
     paddingBottom: Padding['5xl'],
   },
   emptyContainer: {

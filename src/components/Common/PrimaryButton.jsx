@@ -31,7 +31,16 @@
 // });
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Padding, Shadows } from '../../constants/globalStyle';
+import {
+  Colors,
+  FontSizes,
+  FontWeights,
+  Heights,
+  Padding,
+  Radius,
+  Shadows,
+} from '../../constants/globalStyle';
+import { ms, s, vs } from 'react-native-size-matters';
 
 export default function PrimaryButton({ title, onPress, style }) {
   return (
@@ -47,19 +56,19 @@ export default function PrimaryButton({ title, onPress, style }) {
 
 const styles = StyleSheet.create({
   button: {
-    height: 48,
-    paddingHorizontal: 24,
+    height: Heights.buttonS,
+    paddingHorizontal: Padding.horizontal2xl,
 
-    backgroundColor: '#2563EB',
-    borderRadius: 16,
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.xl,
     alignItems: 'center',
     justifyContent: 'center',
     ...Shadows.primaryButton,
   },
 
   label: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#FFFFFF',
+    fontSize: FontSizes.bodyMd,
+    fontWeight: FontWeights.semibold,
+    color: Colors.white,
   },
 });

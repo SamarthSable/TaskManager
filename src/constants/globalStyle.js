@@ -253,12 +253,13 @@ export const Radius = {
 
 export const Heights = {
   full: '100%',
+  xxs: vs(6),
   xs: vs(8),
   // Inputs / Buttons
   input: vs(52),
   button: vs(52),
   socialButton: vs(52),
-
+  buttonS: 48,
   // Small controls
   inputSm: vs(32),
   inputs: vs(38),
@@ -281,6 +282,7 @@ export const Heights = {
 
   // Header
   header: vs(56),
+  headerH: vs(48),
 
   //Cards
   statCard: vs(80),
@@ -288,6 +290,8 @@ export const Heights = {
   // ProgressHeight
   progressBar: vs(6),
   tabLineHeight: vs(2),
+
+  imgContainer: ms(140),
 };
 
 /* 
@@ -296,6 +300,7 @@ export const Heights = {
 
 export const Widths = {
   full: '100%',
+  xxs: s(6),
   xs: s(8),
   iconXs: s(16),
   iconSm: s(20),
@@ -308,6 +313,7 @@ export const Widths = {
   buttonSm: s(120),
   buttonMd: s(160),
   buttonLg: s(200),
+  imgContainer: ms(140),
 };
 
 /* 

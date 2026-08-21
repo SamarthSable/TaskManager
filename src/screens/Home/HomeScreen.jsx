@@ -15,6 +15,7 @@ import Svg, { Defs, LinearGradient, Path, Stop, Line } from 'react-native-svg';
 import StatCard from '../../components/Common/StatCard';
 import ProjectCard from '../../components/Common/ProjectCard';
 import projects from '../../data/projects';
+import tasks from '../../data/tasks';
 import {
   Colors,
   FontSizes,
@@ -33,6 +34,7 @@ import { getUserProfile } from '../../services/authServices';
 import { useNavigation } from '@react-navigation/native';
 import { showSnackbar } from '../../redux/slices/snackbarSlice';
 import { useDispatch } from 'react-redux';
+import EmptyStateCard from '../../components/Common/EmptyStateCard';
 
 export default function HomeScreen() {
   const dispatch = useDispatch();
@@ -79,12 +81,15 @@ export default function HomeScreen() {
 
       <View style={styles.header}>
         <View style={styles.profileSection}>
-          <View style={styles.avatar}>
+          <TouchableOpacity
+            style={styles.avatar}
+            onPress={() => navigation.navigate('Profile')}
+          >
             <Text style={styles.avatarText}>
               {firstName?.[0]?.toUpperCase() || 'U'}
               {lastName?.[0]?.toUpperCase() || ''}
             </Text>
-          </View>
+          </TouchableOpacity>
 
           <View>
             <Text style={styles.greeting}>Good morning 👋</Text>
@@ -115,101 +120,116 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {/* STAT CARDS */}
-
-        <View style={styles.statsGrid}>
-          <StatCard
-            icon="folder-outline"
-            iconColor={Colors.primary}
-            iconBackground={Colors.projectBg}
-            value="12"
-            label="Projects"
-            change="+2"
-            positive
-          />
-
-          <StatCard
-            icon="checkbox-outline"
-            iconColor={Colors.secondary}
-            iconBackground={Colors.chkBg}
-            value="84"
-            label="Tasks"
-            change="+8"
-            positive
-          />
-
-          <StatCard
-            icon="time-outline"
-            iconColor={Colors.warning}
-            iconBackground={Colors.pendingBg}
-            value="23"
-            label="Pending"
-            change="-3"
-          />
-
-          <StatCard
-            icon="checkmark-circle-outline"
-            iconColor={Colors.success}
-            iconBackground={Colors.doneBg}
-            value="61"
-            label="Done"
-            change="+11"
-            positive
-          />
-        </View>
-
-        {/* WEEKLY PROGRESS */}
-
-        <View style={styles.progressCard}>
-          <Text style={styles.sectionTitle}>Weekly Progress</Text>
-
-          <WeeklyChart />
-        </View>
-
-        {/* ACTIVE PROJECTS */}
-
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Active Projects</Text>
-
-          <TouchableOpacity onPress={() => navigation.navigate('Projects')}>
-            <Text style={styles.seeAll}>See All</Text>
-          </TouchableOpacity>
-        </View>
-
-        <FlatList
-          data={projects.slice(0, 3)}
-          keyExtractor={item => item.id}
-          scrollEnabled={false}
-          contentContainerStyle={styles.projectsList}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              activeOpacity={0.9}
-              onPress={() =>
-                navigation.navigate('ProjectDetail', {
-                  project: item,
-                })
-              }
-            >
-              <ProjectCard project={item} varient="Home" />
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons
-                name="folder-open-outline"
-                size={ms(40)}
-                color={Colors.placeholder}
-              />
-
-              <Text style={styles.emptyText}>No projects found</Text>
-            </View>
-          }
+      {projects.length === 0 ? (
+        <EmptyStateCard
+          icon="folder-outline"
+          iconColor="#2260FF"
+          iconBackgroundColor="#EAF1FF"
+          title="No Projects Yet"
+          description="Create your first project to start managing work."
+          buttonText="Create Project"
+          buttonColor="#2260FF"
+          onPress={() => navigation.navigate('NewProject')}
         />
-      </ScrollView>
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* STAT CARDS */}
+
+          <View style={styles.statsGrid}>
+            <StatCard
+              icon="folder-outline"
+              iconColor={Colors.primary}
+              iconBackground={Colors.projectBg}
+              value={projects.length}
+              label="Projects"
+              change="+2"
+              positive
+              onPress={() => navigation.navigate('Projects')}
+            />
+
+            <StatCard
+              icon="checkbox-outline"
+              iconColor={Colors.secondary}
+              iconBackground={Colors.chkBg}
+              value={tasks.length}
+              label="Tasks"
+              change="+8"
+              positive
+              onPress={() => navigation.navigate('Task')}
+            />
+
+            <StatCard
+              icon="time-outline"
+              iconColor={Colors.warning}
+              iconBackground={Colors.pendingBg}
+              value={projects.filter(i => i.status !== 'Completed').length}
+              label="Pending"
+              change="-3"
+            />
+
+            <StatCard
+              icon="checkmark-circle-outline"
+              iconColor={Colors.success}
+              iconBackground={Colors.doneBg}
+              value={projects.filter(i => i.status === 'Completed').length}
+              label="Done"
+              change="+11"
+              positive
+            />
+          </View>
+
+          {/* WEEKLY PROGRESS */}
+
+          <View style={styles.progressCard}>
+            <Text style={styles.sectionTitle}>Weekly Progress</Text>
+
+            <WeeklyChart />
+          </View>
+
+          {/* ACTIVE PROJECTS */}
+
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Active Projects</Text>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Projects')}>
+              <Text style={styles.seeAll}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <FlatList
+            data={projects.slice(0, 3)}
+            keyExtractor={item => item.id}
+            scrollEnabled={false}
+            contentContainerStyle={styles.projectsList}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() =>
+                  navigation.navigate('ProjectDetail', {
+                    project: item,
+                  })
+                }
+              >
+                <ProjectCard project={item} varient="Home" />
+              </TouchableOpacity>
+            )}
+            ListEmptyComponent={
+              <View style={styles.emptyContainer}>
+                <Ionicons
+                  name="folder-open-outline"
+                  size={ms(40)}
+                  color={Colors.placeholder}
+                />
+
+                <Text style={styles.emptyText}>No projects found</Text>
+              </View>
+            }
+          />
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -219,7 +239,7 @@ export default function HomeScreen() {
  */
 
 function WeeklyChart() {
-  const chartWidth = ms(300);
+  const chartWidth = ms(280);
   const chartHeight = vs(125);
 
   return (
@@ -516,7 +536,6 @@ const styles = StyleSheet.create({
 
   yLabels: {
     width: ms(24),
-
     height: vs(125),
 
     justifyContent: 'space-between',

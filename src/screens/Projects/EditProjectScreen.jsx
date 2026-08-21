@@ -198,7 +198,7 @@ export default function EditProjectScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
@@ -209,7 +209,10 @@ export default function EditProjectScreen() {
           backgroundColor={Colors.dangerLight}
           rightIcon="trash-outline"
           rightIconColor={Colors.danger}
-          onRightPress={handleDelete}
+          onRightPress={() => {
+            Keyboard.dismiss();
+            handleDelete();
+          }}
         />
 
         <ScrollView
@@ -261,7 +264,10 @@ export default function EditProjectScreen() {
               <TouchableOpacity
                 style={styles.dateInput}
                 activeOpacity={0.7}
-                onPress={() => setShowStartPicker(true)}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setShowStartPicker(true);
+                }}
               >
                 <Ionicons
                   name="calendar-outline"
@@ -281,7 +287,10 @@ export default function EditProjectScreen() {
               <TouchableOpacity
                 style={styles.dateInput}
                 activeOpacity={0.7}
-                onPress={() => setShowEndPicker(true)}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setShowEndPicker(true);
+                }}
               >
                 <Ionicons
                   name="calendar-outline"
@@ -332,7 +341,10 @@ export default function EditProjectScreen() {
                     styles.priorityButton,
                     selected && styles.priorityButtonActive,
                   ]}
-                  onPress={() => setPriority(item)}
+                  onPress={() => {
+                    Keyboard.dismiss();
+                    setPriority(item);
+                  }}
                 >
                   <Text
                     style={[
@@ -444,6 +456,7 @@ const styles = StyleSheet.create({
   },
 
   keyboardContainer: {
+    paddingBottom: Padding.lg,
     flex: 1,
   },
   /* Header */
@@ -482,18 +495,6 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
   },
 
-  deleteButton: {
-    width: ms(38),
-    height: ms(38),
-
-    borderRadius: Radius.full,
-
-    backgroundColor: Colors.dangerLight,
-
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
   /* Content */
 
   content: {
@@ -513,29 +514,21 @@ const styles = StyleSheet.create({
   /* Input */
 
   inputContainer: {
-    height: Heights.inputSm,
-
+    // height: Heights.inputSm,
     flexDirection: 'row',
     alignItems: 'center',
-
     paddingHorizontal: Padding.lg,
-
     borderWidth: BorderWidth.thin,
     borderColor: Colors.border,
-
     borderRadius: Radius['3xl'],
-
     backgroundColor: Colors.background,
   },
 
   input: {
     flex: 1,
-
     marginLeft: Margin.md,
-
     fontFamily: fonts.regular,
     fontSize: FontSizes.body,
-
     color: Colors.textPrimary,
   },
 

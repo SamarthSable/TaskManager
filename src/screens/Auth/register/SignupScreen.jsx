@@ -7,6 +7,7 @@ import {
   Platform,
   ScrollView,
   View,
+  Keyboard,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -393,7 +394,10 @@ export default function SignupScreen() {
           <PrimaryButton
             title={loading ? 'Creating Account...' : 'Create Account'}
             style={styles.createButton}
-            onPress={handleSubmit}
+            onPress={() => {
+              Keyboard.dismiss();
+              handleSubmit();
+            }}
             disabled={loading}
           />
 

@@ -10,13 +10,13 @@ import {
   Spacing,
   Widths,
 } from '../../constants/globalStyle';
-import { ms, vs } from 'react-native-size-matters';
+import { ms, s, vs } from 'react-native-size-matters';
 import { fonts } from '../../constants/fonts';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { Folder, Icon } from '../../assets/svgs';
 export default function ProjectCard({ project, varient }) {
   const {
-    icon = 'folder-outline',
+    icon = Folder,
     iconColor = Colors.primary,
     title,
     owner = 'Alex Chen',
@@ -54,7 +54,8 @@ export default function ProjectCard({ project, varient }) {
               },
             ]}
           >
-            <Ionicons name={icon} size={ms(21)} color={iconColor} />
+            {/* <Ionicons name={icon} size={ms(21)} color={iconColor} /> */}
+            <Folder color={iconColor} height={vs(24)} width={s(24)} />
           </View>
 
           <View style={styles.titleContainer}>
@@ -197,7 +198,6 @@ const styles = StyleSheet.create({
     height: Widths.iconXl,
 
     borderRadius: Radius.full,
-
     alignItems: 'center',
     justifyContent: 'center',
 

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
   Colors,
@@ -19,9 +19,10 @@ export default function StatCard({
   label,
   change,
   positive,
+  onPress,
 }) {
   return (
-    <View style={styles.statCard}>
+    <TouchableOpacity style={styles.statCard} onPress={onPress}>
       <View style={styles.statTop}>
         <View
           style={[
@@ -49,7 +50,7 @@ export default function StatCard({
       <Text style={styles.statValue}>{value}</Text>
 
       <Text style={styles.statLabel}>{label}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

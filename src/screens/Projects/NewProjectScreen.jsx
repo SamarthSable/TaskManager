@@ -34,6 +34,7 @@ import Header from '../../components/Common/Header';
 import TabSwitcher from '../../components/Common/TabSwitcher';
 import { showSnackbar } from '../../redux/slices/snackbarSlice';
 import { useDispatch } from 'react-redux';
+import projects from '../../data/projects';
 
 export default function NewProjectScreen() {
   const navigation = useNavigation();
@@ -325,7 +326,10 @@ export default function NewProjectScreen() {
             <TouchableOpacity
               style={styles.addMembersButton}
               activeOpacity={0.7}
-              onPress={() => console.log('Open members')}
+              onPress={() => {
+                Keyboard.dismiss();
+                console.log('Open members');
+              }}
             >
               <Ionicons
                 name="person-add-outline"
@@ -340,7 +344,10 @@ export default function NewProjectScreen() {
           {/* Create Button */}
           <PrimaryButton
             title={'Create Project'}
-            onPress={() => handleCreateProject()}
+            onPress={() => {
+              Keyboard.dismiss();
+              handleCreateProject();
+            }}
           />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -432,6 +439,7 @@ const styles = StyleSheet.create({
 
   keyboardContainer: {
     flex: 1,
+    paddingBottom: Padding['2xl'],
   },
 
   /* Scroll */

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {
+  Keyboard,
   ScrollView,
   StyleSheet,
   Text,
@@ -235,7 +236,10 @@ export default function LoginScreen() {
           <PrimaryButton
             title={loading ? 'Signing In...' : 'Sign In'}
             style={styles.button}
-            onPress={handleLogin}
+            onPress={() => {
+              Keyboard.dismiss();
+              handleLogin();
+            }}
             disabled={loading || googleLoading}
           />
         </View>
@@ -257,7 +261,10 @@ export default function LoginScreen() {
 
           <TouchableOpacity
             style={styles.socialButton}
-            onPress={handleGoogleLogin}
+            onPress={() => {
+              Keyboard.dismiss();
+              handleGoogleLogin();
+            }}
             disabled={googleLoading || loading}
           >
             <Google width={22} height={22} />
